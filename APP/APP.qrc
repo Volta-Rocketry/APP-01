@@ -1,0 +1,25 @@
+<RCC>
+    <qresource>
+        <file>APP.qmlproject</file>
+        <file>APP/Constants.qml</file>
+        <file>APP/EventListModel.qml</file>
+        <file>APP/EventListSimulator.qml</file>
+        <file>APP/qmldir</file>
+        <file>APPContent/App.qml</file>
+        <file>APPContent/CAMERA_CATTALEYA.qml</file>
+        <file>APPContent/CAMERA_CATTALEYAForm.ui.qml</file>
+        <file>APPContent/images/colombia.svg</file>
+        <file>APPContent/images/coordenada.svg</file>
+        <file>APPContent/images/flor.svg</file>
+        <file>APPContent/images/logobn.svg</file>
+        <file>APPContent/images/logoU.svg</file>
+        <file>APPContent/images/tempe (1).svg</file>
+        <file>APPContent/images/voltaje.svg</file>
+        <file>APPContent/resources/fonts/Bevan.ttf</file>
+        <file>APPContent/resources/fonts/Calistoga-Regular.ttf</file>
+        <file>APPContent/Screen01.ui.qml</file>
+        <file>APPContent/TELEMETRY_CATTALEYA.qml</file>
+        <file>APPContent/TELEMETRY_CATTALEYAForm.ui.qml</file>
+        <file>qtquickcontrols2.conf</file>
+    </qresource>
+</RCC>
