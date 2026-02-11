@@ -10,11 +10,11 @@ qt6_add_qml_module(APPContent
     RESOURCE_PREFIX "/qt/qml"
     QML_FILES
         "App.qml"
-        "CAMERA_CATTALEYA.qml"
-        "CAMERA_CATTALEYAForm.ui.qml"
+        "CameraScreen.qml"
+        "CameraScreenForm.ui.qml"
         "Screen01.ui.qml"
-        "TELEMETRY_CATTALEYA.qml"
-        "TELEMETRY_CATTALEYAForm.ui.qml"
+        "TelemetryScreen.qml"
+        "TelemetryScreenForm.ui.qml"
     RESOURCES
         "images/colombia.svg"
         "images/coordenada.svg"
