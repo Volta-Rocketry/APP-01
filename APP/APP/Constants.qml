@@ -6,6 +6,9 @@ QtObject {
     readonly property int designWidth: 1920
     readonly property int designHeight: 1080
 
+    readonly property int designWidthloader: 1920
+    readonly property int designHeightloader: 720
+
     readonly property font baseFont: Qt.font({
         family: Qt.application.font.family,
         pixelSize: Qt.application.font.pixelSize

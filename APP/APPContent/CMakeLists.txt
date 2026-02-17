@@ -15,6 +15,8 @@ qt6_add_qml_module(APPContent
         "Screen01.ui.qml"
         "TelemetryScreen.qml"
         "TelemetryScreenForm.ui.qml"
+        "MainScreenForm.ui.qml"
+        "MainScreen.qml"
     RESOURCES
         "images/colombia.svg"
         "images/coordenada.svg"
