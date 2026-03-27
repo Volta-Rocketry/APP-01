@@ -10,7 +10,27 @@ qt6_add_qml_module(InterfaceContent
     RESOURCE_PREFIX "/qt/qml"
     QML_FILES
         "App.qml"
+        "CameraScreen.qml"
+        "CameraScreenForm.ui.qml"
+        "ControlPanel.qml"
+        "ControlPanelForm.ui.qml"
+        "MainScreen.qml"
+        "MainScreenForm.ui.qml"
         "Screen01.ui.qml"
+        "TelemetryScreen.qml"
+        "TelemetryScreenForm.ui.qml"
+    RESOURCES
+        "images/coordenada.svg"
+        "images/voltaa.svg"
+        "images/flor.svg"
+        "images/logoU.svg"
+        "images/colombia.svg"
+        "images/Volta.svg"
+        "images/voltaje.svg"
+        "images/tempe (1).svg"
+        "images/file.svg"
+        "fonts/Calistoga-Regular.ttf"
+        "fonts/Bevan.ttf"
 )
 
 

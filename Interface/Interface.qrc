@@ -1,0 +1,31 @@
+<RCC>
+    <qresource>
+        <file>Interface.qmlproject</file>
+        <file>Interface/Constants.qml</file>
+        <file>Interface/EventListModel.qml</file>
+        <file>Interface/EventListSimulator.qml</file>
+        <file>Interface/qmldir</file>
+        <file>InterfaceContent/App.qml</file>
+        <file>InterfaceContent/CameraScreen.qml</file>
+        <file>InterfaceContent/CameraScreenForm.ui.qml</file>
+        <file>InterfaceContent/ControlPanel.qml</file>
+        <file>InterfaceContent/ControlPanelForm.ui.qml</file>
+        <file>InterfaceContent/fonts/Bevan.ttf</file>
+        <file>InterfaceContent/fonts/Calistoga-Regular.ttf</file>
+        <file>InterfaceContent/images/colombia.svg</file>
+        <file>InterfaceContent/images/coordenada.svg</file>
+        <file>InterfaceContent/images/file.svg</file>
+        <file>InterfaceContent/images/flor.svg</file>
+        <file>InterfaceContent/images/logoU.svg</file>
+        <file>InterfaceContent/images/tempe (1).svg</file>
+        <file>InterfaceContent/images/Volta.svg</file>
+        <file>InterfaceContent/images/voltaa.svg</file>
+        <file>InterfaceContent/images/voltaje.svg</file>
+        <file>InterfaceContent/MainScreen.qml</file>
+        <file>InterfaceContent/MainScreenForm.ui.qml</file>
+        <file>InterfaceContent/Screen01.ui.qml</file>
+        <file>InterfaceContent/TelemetryScreen.qml</file>
+        <file>InterfaceContent/TelemetryScreenForm.ui.qml</file>
+        <file>qtquickcontrols2.conf</file>
+    </qresource>
+</RCC>
