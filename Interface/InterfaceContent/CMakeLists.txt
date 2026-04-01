@@ -20,17 +20,17 @@ qt6_add_qml_module(InterfaceContent
         "TelemetryScreen.qml"
         "TelemetryScreenForm.ui.qml"
     RESOURCES
+        "fonts/Bevan.ttf"
+        "fonts/Calistoga-Regular.ttf"
+        "images/colombia.svg"
         "images/coordenada.svg"
-        "images/voltaa.svg"
+        "images/file.svg"
         "images/flor.svg"
         "images/logoU.svg"
-        "images/colombia.svg"
-        "images/Volta.svg"
-        "images/voltaje.svg"
         "images/tempe (1).svg"
-        "images/file.svg"
-        "fonts/Calistoga-Regular.ttf"
-        "fonts/Bevan.ttf"
+        "images/Volta.svg"
+        "images/voltaa.svg"
+        "images/voltaje.svg"
 )
 
 
