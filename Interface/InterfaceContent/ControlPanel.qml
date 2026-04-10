@@ -8,6 +8,21 @@ ControlPanelForm {
         function onMicrocontrollerConnectionStatus(status) {
             btnConnect.text = status ? "End Connection" : "Start Connection"
         }
+        function onTelemetryUpdated(Ax, Ay, Az, Gx, Gy, Gz, lat, lon) {
+
+            txtAx.text = Ax.toFixed(2)
+            txtAy.text = Ay.toFixed(2)
+            txtAz.text = Az.toFixed(2)
+
+            txtGx.text = Gx.toFixed(2)
+            txtGy.text = Gy.toFixed(2)
+            txtGz.text = Gz.toFixed(2)
+
+            txtLat.text = lat.toFixed(6)
+            txtLon.text = lon.toFixed(6)
+
+            console.log("Telemetría actualizada")
+        }
     }
 
     btnSearch.onClicked: {
@@ -21,22 +36,38 @@ ControlPanelForm {
             for (var i = 0; i < ports.length; i++) {
                 cbSerialPortModel.append({ "key": ports[i] })
             }
+
+            // Selecciona automáticamente el primero
+            cbSerialPort.currentIndex = 0
+
+            console.log("Puertos cargados correctamente")
         } else {
             cbSerialPortModel.append({ "key": "No ports found" })
-            console.log("Error: C++ no detectó ningún hardware conectado.")
+            cbSerialPort.currentIndex = 0
+
+            console.log("Error, C++ no detectó ningún hardware conectado.")
         }
     }
 
     cbSerialPort.onActivated: {
-        if (cbSerialPort.currentText !== "No ports found") {
-            serialManager.savePortConnection(cbSerialPort.currentText)
+        let selectedPort = cbSerialPort.currentText
+
+        console.log("Puerto seleccionado: " + selectedPort)
+
+        if (selectedPort !== "No ports found" && selectedPort !== "") {
+            serialManager.savePortConnection(selectedPort)
+            console.log("Puerto enviado a C++ correctamente")
+        } else {
+            console.log("Selección inválida de puerto")
         }
     }
 
     cbBaudRate.onActivated: serialManager.setBaudRateMode(cbBaudRate.currentIndex)
 
     btnConnect.onClicked: {
+
         let confirmation = serialManager.getMicroConfirmation()
+
         if (confirmation) {
             serialManager.endConnection()
         } else {

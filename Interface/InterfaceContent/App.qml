@@ -16,7 +16,7 @@ Window {
         Loader {
             id: mainLoader
             anchors.fill: parent
-            source: "ControlPanel.qml" // Archivo inicial de configuración
+            source: "ControlPanel.qml"
         }
 
         Keys.onPressed: (event) => {

@@ -3,7 +3,8 @@
 
 #include <QApplication>
 #include <QQmlApplicationEngine>
-
+#include <QQmlContext>
+#include "serialmanagement.h"
 #include "autogen/environment.h"
 
 int main(int argc, char *argv[])
@@ -12,7 +13,12 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
+
+    SerialManagement serialManager;
+    engine.rootContext()->setContextProperty("serialManager", &serialManager);
+
     const QUrl url(mainQmlFile);
+
     QObject::connect(
         &engine, &QQmlApplicationEngine::objectCreated, &app,
         [url](QObject *obj, const QUrl &objUrl) {
@@ -22,6 +28,7 @@ int main(int argc, char *argv[])
 
     engine.addImportPath(QCoreApplication::applicationDirPath() + "/qml");
     engine.addImportPath(":/");
+
     engine.load(url);
 
     if (engine.rootObjects().isEmpty())
@@ -29,3 +36,5 @@ int main(int argc, char *argv[])
 
     return app.exec();
 }
+
+
