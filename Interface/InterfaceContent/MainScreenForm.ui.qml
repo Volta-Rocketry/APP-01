@@ -68,8 +68,8 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 74
-                    anchors.rightMargin: 74
+                    anchors.leftMargin: 60
+                    anchors.rightMargin: 88
                     anchors.topMargin: 89
                     anchors.bottomMargin: 60
                     font.weight: Font.Thin
@@ -85,8 +85,8 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 74
-                    anchors.rightMargin: 69
+                    anchors.leftMargin: 58
+                    anchors.rightMargin: 86
                     anchors.topMargin: 133
                     anchors.bottomMargin: 16
                     font.weight: Font.Thin
@@ -466,7 +466,7 @@ Rectangle {
                 Text {
                     id: nameMission
                     color: Constants.fontPrimary
-                    text: "MISSION CATTALEYA"
+                    text: "MISSION CATTALEYA   "
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.top: parent.top

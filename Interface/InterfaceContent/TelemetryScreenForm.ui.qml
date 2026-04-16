@@ -1,5 +1,4 @@
 
-
 /*
 This is a UI file (.ui.qml) that is intended to be edited in Qt Design Studio only.
 It is supposed to be strictly declarative and only uses a subset of QML. If you edit
@@ -17,67 +16,109 @@ Rectangle {
     color: Constants.backgroundMain
 
     readonly property int baseW: 1920
-    readonly property int baseH: 1080
+    readonly property int baseH: 712
 
-    width: Constants.designWidthloader
-    height: Constants.designHeightloader
+    width: Constants.designWidth
+    height: Constants.designHeight
 
-    ChartView {
-        id: spline
+    // Sección izquierda: Vista 3D del cohete (25% del ancho)
+    Rectangle {
+        id: rocket3dSection
+        color: Constants.backgroundMain
         anchors.left: parent.left
-        anchors.right: parent.right
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        anchors.leftMargin: 459
-        anchors.rightMargin: 511
-        anchors.topMargin: 40
-        anchors.bottomMargin: 31
-        title: "ALTITUDE VS TIME"
+        width: parent.width * 0.25
 
-        localizeNumbers: false
-        dropShadowEnabled: true
-        backgroundRoundness: 6.7
-        titleColor: "#000000"
-        backgroundColor: Constants.backgroundMain
-        antialiasing: true
+        Rectangle {
+            id: rocket3dArea
+            color: "#222222"
+            anchors.fill: parent
+            anchors.margins: 10
+            anchors.rightMargin: 32
+
+            Text {
+                anchors.centerIn: parent
+                text: "3D ROCKET VIEW\n"
+                font.pointSize: 18
+                font.bold: true
+                color: "#ffffff"
+                horizontalAlignment: Text.AlignHCenter
+            }
+        }
     }
 
+    // Sección central: Gráfico de Altitud vs Tiempo (centro)
     Rectangle {
-        id: map
-        color: "#888888"
-        anchors.left: parent.left
-        anchors.right: parent.right
+        id: chartSection
+        color: Constants.backgroundMain
+        anchors.left: rocket3dSection.right
+        anchors.right: mapSection.left
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        anchors.leftMargin: 1460
-        anchors.rightMargin: 0
-        anchors.topMargin: 31
-        anchors.bottomMargin: 357
+        anchors.rightMargin: 40
+
+        ChartView {
+            id: spline
+            anchors.fill: parent
+            anchors.margins: 10
+            anchors.leftMargin: 0
+            anchors.rightMargin: 8
+            anchors.topMargin: 12
+            anchors.bottomMargin: 8
+
+            title: "ALTITUDE VS TIME"
+            titleFont.pointSize: 16
+            titleFont.bold: true
+
+            localizeNumbers: false
+            dropShadowEnabled: true
+            backgroundRoundness: 6
+            titleColor: "#000000"
+            backgroundColor: Constants.backgroundPanel
+            antialiasing: true
+
+            legend.visible: false
+
+            ValueAxis {
+                id: axisX
+                titleText: "Time (s)"
+                min: 0
+                max: 100
+            }
+
+            ValueAxis {
+                id: axisY
+                titleText: "Altitude (m)"
+                min: 0
+                max: 1000
+            }
+        }
     }
 
+    // Sección derecha: Mapa y telemetría adicional
     Rectangle {
-        id: camera
-        color: "#000000"
-        anchors.left: parent.left
+        id: mapSection
+        color: Constants.backgroundMain
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        anchors.leftMargin: 1460
-        anchors.rightMargin: 0
-        anchors.topMargin: 355
-        anchors.bottomMargin: 33
-    }
+        width: parent.width * 0.15
 
-    Rectangle {
-        id: rocket
-        color: "#000000"
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.leftMargin: 29
-        anchors.rightMargin: 1504
-        anchors.topMargin: 31
-        anchors.bottomMargin: 33
+        Rectangle {
+            id: mapArea
+            color: "#888888"
+            anchors.fill: parent
+            anchors.margins: 10
+            anchors.leftMargin: -25
+
+            Text {
+                anchors.centerIn: parent
+                text: "MAP VIEW"
+                font.pointSize: 16
+                font.bold: true
+                color: "#ffffff"
+            }
+        }
     }
 }

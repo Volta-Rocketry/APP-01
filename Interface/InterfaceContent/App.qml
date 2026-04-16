@@ -16,14 +16,38 @@ Window {
         Loader {
             id: mainLoader
             anchors.fill: parent
-            source: "ControlPanel.qml"
+            source: "MainScreen.qml"
+
+            onLoaded: {
+                if (!item) {
+                    console.log("App.qml - mainLoader loaded null item")
+                    return;
+                }
+
+                console.log("App.qml - mainLoader loaded item", item)
+
+                // conexión para cambiar a control panel
+                if (item.showControlPanelRequested) {
+                    item.showControlPanelRequested.connect(function() {
+                        console.log("App.qml - showControlPanelRequested received")
+                        mainLoader.source = "ControlPanel.qml"
+                    })
+                }
+
+                if (item.showTelemetryRequested) {
+                    item.showTelemetryRequested.connect(function() {
+                        console.log("App.qml - showTelemetryRequested received")
+                        mainLoader.source = "MainScreen.qml"
+                    })
+                }
+            }
         }
 
         Keys.onPressed: (event) => {
             let hasManager = (typeof serialManager !== "undefined");
 
             switch (event.key) {
-                //ARCHIVOS Y CONEXIÓN
+                // enter para empezar a grabar, delete para parar
                 case Qt.Key_Enter:
                 case Qt.Key_Return:
                     if (hasManager) serialManager.createFile();
@@ -34,7 +58,7 @@ Window {
                     if (hasManager) serialManager.closeFile();
                     break;
 
-                //DETECCIÓN DE FASES DE VUELO
+                // Q, W, E, R para cambiar fases de vuelo manualmente si me equivoco
                 case Qt.Key_Q:
                     console.log("Boost manual detectado");
                     if (hasManager) {
@@ -64,7 +88,7 @@ Window {
                     if (hasManager) serialManager.setReferenceTime();
                     break;
 
-                //COMANDOS REMOTOS
+                // Z, X, F, O, S, L para mandar comandos al cohete
                 case Qt.Key_Z:
                     if (hasManager) serialManager.sendData('z');
                     break;
@@ -93,7 +117,7 @@ Window {
                     if (hasManager) serialManager.sendFrequencyChange();
                     break;
 
-                //CONTROL DE INTERFAZ Y VISTAS
+                //control de interfaces
                 case Qt.Key_C:
 
                     if (mainLoader.source.toString().includes("TelemetryScreen.qml")) {
@@ -136,7 +160,6 @@ Window {
                     break;
 
                 case Qt.Key_F6:
-                    // Cambio de color del Log
                     if (mainLoader.item && mainLoader.item.txtLog) {
                         let currentColor = mainLoader.item.txtLog.color.toString();
                         mainLoader.item.txtLog.color = (currentColor === "#ffffff") ? "#000000" : "#ffffff";

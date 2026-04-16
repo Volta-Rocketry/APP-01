@@ -2,6 +2,13 @@ import QtQuick
 import Qt.labs.platform
 
 ControlPanelForm {
+    Connections {
+        target: backToTelemetryArea
+        function onClicked() {
+            console.log("ControlPanel - volvi a telemetria")
+            showTelemetryRequested()
+        }
+    }
 
     Connections {
         target: serialManager
@@ -21,7 +28,7 @@ ControlPanelForm {
             txtLat.text = lat.toFixed(6)
             txtLon.text = lon.toFixed(6)
 
-            console.log("Telemetría actualizada")
+            console.log("datos de IMU actualizados")
         }
     }
 
@@ -30,14 +37,13 @@ ControlPanelForm {
 
         let ports = serialManager.searchPortInfo()
 
-        console.log("Puertos detectados por el sistema: " + JSON.stringify(ports))
+        console.log("Puertos encontrados: " + JSON.stringify(ports))
 
         if (ports && ports.length > 0) {
             for (var i = 0; i < ports.length; i++) {
                 cbSerialPortModel.append({ "key": ports[i] })
             }
 
-            // Selecciona automáticamente el primero
             cbSerialPort.currentIndex = 0
 
             console.log("Puertos cargados correctamente")
