@@ -26,7 +26,7 @@ Window {
 
                 console.log("App.qml - mainLoader loaded item", item)
 
-                // conexión para cambiar a control panel
+                // me conecto al signal para cambiar a control panel
                 if (item.showControlPanelRequested) {
                     item.showControlPanelRequested.connect(function() {
                         console.log("App.qml - showControlPanelRequested received")
@@ -117,7 +117,7 @@ Window {
                     if (hasManager) serialManager.sendFrequencyChange();
                     break;
 
-                //control de interfaces
+                //CONTROL DE INTERFAZ Y VISTAS
                 case Qt.Key_C:
 
                     if (mainLoader.source.toString().includes("TelemetryScreen.qml")) {
@@ -160,6 +160,7 @@ Window {
                     break;
 
                 case Qt.Key_F6:
+                    // Cambio de color del Log
                     if (mainLoader.item && mainLoader.item.txtLog) {
                         let currentColor = mainLoader.item.txtLog.color.toString();
                         mainLoader.item.txtLog.color = (currentColor === "#ffffff") ? "#000000" : "#ffffff";

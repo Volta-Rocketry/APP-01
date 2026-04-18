@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
 
     SerialManagement serialManager;
+
     engine.rootContext()->setContextProperty("serialManager", &serialManager);
 
     const QUrl url(mainQmlFile);
@@ -36,5 +37,3 @@ int main(int argc, char *argv[])
 
     return app.exec();
 }
-
-

@@ -22,6 +22,25 @@ Rectangle {
     width: Constants.designWidth
     height: Constants.designHeight
 
+    property alias content: content
+    property alias loader: loader
+
+    property string latitudeText: "0.0000000 N"
+    property string longitudeText: "0.0000000 W"
+    property string altitudeFtText: "0 ft"
+    property string altitudeMText: "0 m"
+    property string speedFtText: "0 ft/s"
+    property string speedMText: "0 m/s"
+    property string accelerationFtText: "0 ft/s²"
+    property string accelerationMText: "0 m/s²"
+    property string voltageText: "0.00 v"
+    property string temperatureText: "0° f"
+    property string timeText: "T: 00:00.00"
+    property real flightPhaseValue: 0
+    property real speedDialValue: 0
+    property real altitudeDialValue: 0
+    property real accelerationDialValue: 0
+
     Item {
         id: content
         width: baseW
@@ -62,7 +81,7 @@ Rectangle {
                 Text {
                     id: accelerationValue1
                     color: Constants.fontSecondary
-                    text: "0 ft/s²"
+                    text: accelerationFtText
                     elide: Text.ElideNone
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -80,7 +99,7 @@ Rectangle {
                 Text {
                     id: accelerationValue2
                     color: Constants.fontSecondary
-                    text: "0 m/s²"
+                    text: accelerationMText
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.top: parent.top
@@ -113,6 +132,9 @@ Rectangle {
 
                 Dial {
                     id: dialAcceleration
+                    from: 0
+                    to: 30
+                    value: accelerationDialValue
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.top: parent.top
@@ -141,7 +163,7 @@ Rectangle {
                     x: 76
                     y: 89
                     color: Constants.fontSecondary
-                    text: "0 ft"
+                    text: altitudeFtText
                     font.weight: Font.Thin
                     font.pointSize: 22
                     font.family: "Calistoga"
@@ -150,7 +172,7 @@ Rectangle {
                 Text {
                     id: altitudeValue2
                     color: Constants.fontSecondary
-                    text: "0 m"
+                    text: altitudeMText
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.top: parent.top
@@ -183,6 +205,9 @@ Rectangle {
 
                 Dial {
                     id: dialAltitude
+                    from: 0
+                    to: 5000
+                    value: altitudeDialValue
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.top: parent.top
@@ -209,7 +234,7 @@ Rectangle {
                 Text {
                     id: speedValue1
                     color: Constants.fontSecondary
-                    text: "0 ft/s"
+                    text: speedFtText
                     elide: Text.ElideNone
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -245,7 +270,7 @@ Rectangle {
                 Text {
                     id: speedValue2
                     color: Constants.fontSecondary
-                    text: "0 m/s"
+                    text: speedMText
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.top: parent.top
@@ -261,6 +286,9 @@ Rectangle {
 
                 Dial {
                     id: dialSpeed
+                    from: 0
+                    to: 600
+                    value: speedDialValue
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.top: parent.top
@@ -287,7 +315,7 @@ Rectangle {
                 Text {
                     id: latitudeValue
                     color: Constants.fontSecondary
-                    text: "0.0000000 N"
+                    text: latitudeText
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.top: parent.top
@@ -362,7 +390,7 @@ Rectangle {
                 Text {
                     id: longitudeValue
                     color: Constants.fontSecondary
-                    text: "0.0000000 W"
+                    text: longitudeText
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.top: parent.top
@@ -485,7 +513,7 @@ Rectangle {
                 Text {
                     id: timeValue
                     color: Constants.fontPrimary
-                    text: "T: 00:00.00"
+                    text: timeText
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.top: parent.top
@@ -503,7 +531,7 @@ Rectangle {
                 Text {
                     id: voltageValue
                     color: Constants.fontPrimary
-                    text: "0.00 v"
+                    text: voltageText
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.top: parent.top
@@ -521,7 +549,7 @@ Rectangle {
                 Text {
                     id: temperatureValue
                     color: Constants.fontPrimary
-                    text: "0° f"
+                    text: temperatureText
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.top: parent.top
@@ -584,7 +612,7 @@ Rectangle {
 
                 Text {
                     id: ascent
-                    color: Constants.fontPrimary
+                    color: flightPhaseValue >= 1 ? "#ffffff" : "#caa6d2"
                     text: "ASCENT"
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -601,7 +629,7 @@ Rectangle {
 
                 Text {
                     id: apogee
-                    color: Constants.fontPrimary
+                    color: flightPhaseValue >= 2 ? "#ffffff" : "#caa6d2"
                     text: "APOGEE"
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -618,7 +646,7 @@ Rectangle {
 
                 Text {
                     id: mainChute
-                    color: Constants.fontPrimary
+                    color: flightPhaseValue >= 3 ? "#ffffff" : "#caa6d2"
                     text: "MAIN CHUTE"
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -635,7 +663,7 @@ Rectangle {
 
                 Text {
                     id: touchDown
-                    color: Constants.fontPrimary
+                    color: flightPhaseValue >= 4 ? "#ffffff" : "#caa6d2"
                     text: "TOUCH DOWN"
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -655,7 +683,7 @@ Rectangle {
 
                     from: 0
                     to: 4
-                    value: 0
+                    value: flightPhaseValue
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.top: parent.top

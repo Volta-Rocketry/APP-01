@@ -6,7 +6,7 @@ MainScreenForm {
     id: mainScreenRoot
     signal showControlPanelRequested()
 
-    //se guardan todos los datos que llegan del micro
+    // para guardar todos los datos que llegan del micro
     property real latitude: 0.0
     property real longitude: 0.0
     property real altitude: 0.0
@@ -25,93 +25,67 @@ MainScreenForm {
         target: typeof serialManager !== "undefined" ? serialManager : null
 
         function onTelemetryUpdated(Ax, Ay, Az, Gx, Gy, Gz, lat, lon) {
+            // actualizo lat y lon
             latitude = lat
             longitude = lon
 
-            if (latitudeValue) {
-                latitudeValue.text = lat.toFixed(7) + " N"
-            }
-            if (longitudeValue) {
-                longitudeValue.text = lon.toFixed(7) + " W"
-            }
+            latitudeText = lat.toFixed(7) + " N"
+            longitudeText = lon.toFixed(7) + " W"
 
             console.log("MainScreen - Telemetría IMU: Lat=" + lat + ", Lon=" + lon)
         }
 
         function onAltitudeUpdated(altitudeValue) {
             altitude = altitudeValue
-            
-            if (content && content.down) {
-                let altRect = content.down.rectangleAltitude
-                if (altRect && altRect.altitudeValue1) {
-                    altRect.altitudeValue1.text = (altitudeValue * 3.28084).toFixed(0) + " ft"
-                    altRect.altitudeValue2.text = altitudeValue.toFixed(0) + " m"
-                }
-            }
+
+            altitudeFtText = (altitudeValue * 3.28084).toFixed(0) + " ft"
+            altitudeMText = altitudeValue.toFixed(0) + " m"
+            altitudeDialValue = Math.max(0, Math.min(5000, altitudeValue))
 
             addAltitudeData(time, altitudeValue)
             
-            console.log("Altitud actualizada: " + altitudeValue + " m")
+            console.log("MainScreen - Altitud actualizada: " + altitudeValue + " m")
         }
 
         function onSpeedUpdated(speedValue) {
             speed = speedValue
 
-            if (content && content.down) {
-                let speedRect = content.down.rectangleSpeed
-                if (speedRect && speedRect.speedValue1) {
-                    speedRect.speedValue1.text = (speedValue * 3.28084).toFixed(1) + " ft/s"
-                    speedRect.speedValue2.text = speedValue.toFixed(1) + " m/s"
-                }
-            }
+            speedFtText = (speedValue * 3.28084).toFixed(1) + " ft/s"
+            speedMText = speedValue.toFixed(1) + " m/s"
+            speedDialValue = Math.max(0, Math.min(600, speedValue))
 
-            console.log("Velocidad actualizada: " + speedValue + " m/s")
+            console.log("MainScreen - Velocidad actualizada: " + speedValue + " m/s")
         }
 
         function onAccelerationUpdated(accelValue) {
             acceleration = accelValue
 
-            if (content && content.down) {
-                let accelRect = content.down.rectangleAcceleration
-                if (accelRect && accelRect.accelerationValue1) {
-                    accelRect.accelerationValue1.text = (accelValue * 3.28084).toFixed(1) + " ft/s²"
-                    accelRect.accelerationValue2.text = accelValue.toFixed(1) + " m/s²"
-                }
-            }
+            accelerationFtText = (accelValue * 3.28084).toFixed(1) + " ft/s²"
+            accelerationMText = accelValue.toFixed(1) + " m/s²"
+            accelerationDialValue = Math.max(0, Math.min(30, accelValue))
 
-            console.log("Aceleración actualizada: " + accelValue + " m/s²")
+            console.log("MainScreen - Aceleración actualizada: " + accelValue + " m/s²")
         }
 
         function onVoltageUpdated(voltageValue) {
             voltage = voltageValue
-            
-            if (content && content.up && content.up.part1) {
-                let voltLabel = content.up.part1.voltageValue
-                if (voltLabel) {
-                    voltLabel.text = voltageValue.toFixed(2) + " v"
-                }
-            }
 
-            console.log("Voltaje actualizado: " + voltageValue + " v")
+            voltageText = voltageValue.toFixed(2) + " v"
+
+            console.log("MainScreen - Voltaje actualizado: " + voltageValue + " v")
         }
 
         function onTemperatureUpdated(temperatureValue) {
             temperature = temperatureValue
-            
-            if (content && content.up && content.up.part1) {
-                let tempLabel = content.up.part1.temperatureValue
-                if (tempLabel) {
-                    tempLabel.text = temperatureValue.toFixed(0) + "° I"
-                }
-            }
 
-            console.log("Temperatura actualizada: " + temperatureValue + " °")
+            temperatureText = temperatureValue.toFixed(0) + "° f"
+
+            console.log("MainScreen - Temperatura actualizada: " + temperatureValue + " °")
         }
 
         function onTimeUpdated(timeValue) {
             time = timeValue
 
-            // para convertir los segundos a minutos, segundos y milisegundos
             let minutes = Math.floor(timeValue / 60)
             let seconds = Math.floor(timeValue % 60)
             let milliseconds = Math.floor((timeValue % 1) * 100)
@@ -119,27 +93,18 @@ MainScreenForm {
             let timeStr = "T: " + String(minutes).padStart(2, '0') + 
                         ":" + String(seconds).padStart(2, '0') + 
                         "." + String(milliseconds).padStart(2, '0')
-            
-            if (content && content.up && content.up.part1) {
-                let timeLabel = content.up.part1.timeValue
-                if (timeLabel) {
-                    timeLabel.text = timeStr
-                }
-            }
 
-            console.log("Tiempo actualizado: " + timeStr)
+            timeText = timeStr
+
+            console.log("MainScreen - Tiempo actualizado: " + timeStr)
         }
 
+        // función para actualizar la barra de progreso segun la fase del vuelo
         function onFlightPhaseUpdated(phase) {
-            // para actualizar la barra de progreso segun la fase del vuelo
-            if (content && content.up && content.up.flightPhases) {
-                let pb = content.up.flightPhases.progressBar
-                if (pb) {
-                    pb.value = phase + 1
-                }
-            }
 
-            console.log("Fase de vuelo actualizada: " + phase)
+            flightPhaseValue = phase + 1
+
+            console.log("MainScreen - Fase de vuelo actualizada: " + phase)
         }
 
         function onMicrocontrollerConnectionStatus(status) {
@@ -147,7 +112,6 @@ MainScreenForm {
         }
     }
 
-    //para agregar los datos nuevos a los arreglos
     function addAltitudeData(timeVal, altVal) {
         timeData.push(timeVal)
         altitudeData.push(altVal)
@@ -157,19 +121,17 @@ MainScreenForm {
             maxAltitude = altVal
         }
 
-        //se actualiza la grafica cada 5 datos para no frenar la app
         if (dataPointsCount % 5 === 0) {
             updateAltitudeChart()
         }
     }
 
-    //se actualiza la grafica con los nuevos datos
     function updateAltitudeChart() {
         try {
             if (loader && loader.item) {
                 let chart = loader.item.spline
                 if (chart) {
-                    console.log("Actualizando gráfico con " + timeData.length + " puntos")
+                    console.log("MainScreen - Actualizando gráfico con " + timeData.length + " puntos")
                     
                     while (chart.count > 0) {
                         chart.removeSeries(chart.series(0))
@@ -186,7 +148,7 @@ MainScreenForm {
                     chart.axisX.max = Math.max(100, maxTime * 1.1)
                     chart.axisY.max = Math.max(1000, maxAltitude * 1.2)
                     
-                    console.log("Gráfico actualizado. Máx Altitud: " + maxAltitude)
+                    console.log("MainScreen - Gráfico actualizado. Máx Altitud: " + maxAltitude)
                 }
             }
         } catch (error) {
@@ -194,6 +156,7 @@ MainScreenForm {
         }
     }
 
+    // Timer para enviar datos de prueba en modo simulación
     Timer {
         id: testDataTimer
         interval: 1000
@@ -201,7 +164,6 @@ MainScreenForm {
         repeat: true
 
         onTriggered: {
-            // Enviar datos de prueba
             let testTime = testDataTimer.triggeredOnStart ? 0 : (testTime + 1)
             let testAlt = 500 * Math.sin((testTime * Math.PI) / 30) + 500
             
@@ -218,7 +180,7 @@ MainScreenForm {
     function exportCurrentData() {
         if (typeof serialManager !== "undefined" && serialManager) {
             console.log("Exportando datos actuales...")
-            // Crear un archivo temporal con los datos actuales
+
             let exportData = "Type,Timestamp,Value\n"
             exportData += "ALTITUDE," + time + "," + altitude + "\n"
             exportData += "SPEED," + time + "," + speed + "\n"
@@ -230,7 +192,6 @@ MainScreenForm {
         }
     }
 
-    //obtener estadísticas de vuelo
     function getFlightStatistics() {
         let stats = {
             maxAltitude: maxAltitude,
@@ -244,7 +205,6 @@ MainScreenForm {
         return stats
     }
 
-    //verificar estado de conexión
     function checkConnectionStatus() {
         if (typeof serialManager !== "undefined" && serialManager) {
             return serialManager.getMicroConfirmation()
@@ -253,7 +213,7 @@ MainScreenForm {
     }
 
     function requestControlPanel() {
-        console.log("Ssolicitando ControlPanel")
+        console.log("MainScreen solicitando ControlPanel")
         showControlPanelRequested()
     }
 

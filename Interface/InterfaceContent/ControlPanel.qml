@@ -13,9 +13,11 @@ ControlPanelForm {
     Connections {
         target: serialManager
         function onMicrocontrollerConnectionStatus(status) {
+            // cambio el texto del boton segun si estoy conectado o no
             btnConnect.text = status ? "End Connection" : "Start Connection"
         }
         function onTelemetryUpdated(Ax, Ay, Az, Gx, Gy, Gz, lat, lon) {
+            // muestro los datos de la IMU en los text fields
 
             txtAx.text = Ax.toFixed(2)
             txtAy.text = Ay.toFixed(2)
@@ -33,17 +35,21 @@ ControlPanelForm {
     }
 
     btnSearch.onClicked: {
+        // limpio la lista de puertos
         cbSerialPortModel.clear()
 
+        // busco los puertos disponibles
         let ports = serialManager.searchPortInfo()
 
         console.log("Puertos encontrados: " + JSON.stringify(ports))
 
         if (ports && ports.length > 0) {
+            // agrego cada puerto a la lista
             for (var i = 0; i < ports.length; i++) {
                 cbSerialPortModel.append({ "key": ports[i] })
             }
 
+            // selecciono el primero de una
             cbSerialPort.currentIndex = 0
 
             console.log("Puertos cargados correctamente")
