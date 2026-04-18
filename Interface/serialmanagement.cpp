@@ -9,6 +9,7 @@
 #include <QtMath>
 #include <cmath>
 #include <cstdlib>
+#include <limits>
 
 SerialManagement::SerialManagement(QObject *parent)
     : QObject(parent)
@@ -16,14 +17,23 @@ SerialManagement::SerialManagement(QObject *parent)
     _MCU = new QSerialPort(this);
     simulationTimer = new QTimer(this);
     connect(simulationTimer, &QTimer::timeout, this, &SerialManagement::simulateData);
+    missionTimer = new QTimer(this);
+    missionTimer->setInterval(100);
+    connect(missionTimer, &QTimer::timeout, this, &SerialManagement::updateMissionElapsedTime);
+    elapsedTimer.start();
+    missionTimer->start();
     dataFile = nullptr;
     dataStream = nullptr;
     isLogging = false;
 
-    // Initialize new variables from provided code
+    filePath = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
+    fileName = QStringLiteral("Mission_Cattleya");
+
     _microcontrollerFoundOnConnection = false;
     _microcontrollerConnected = false;
     _serialBuffer = "";
+    _portDescriptionIntendedConnection = QStringLiteral("Test Mode");
+    referenceTime = QTime::currentTime();
 
     QDateTime dateTime = QDateTime::currentDateTimeUtc();
     qint64 timestamp = QDateTime::currentMSecsSinceEpoch();
@@ -32,7 +42,6 @@ SerialManagement::SerialManagement(QObject *parent)
     int seconds = dateTime.time().second();
     int milliseconds = timestamp % 1000;
 
-    // Convertir a segundos como número real
     firstTimeSeconds = minutes * 60 + seconds + milliseconds / 1000.0;
 }
 
@@ -69,6 +78,11 @@ void SerialManagement::savePortConnection(QString portDescription)
     _portDescriptionIntendedConnection = portDescription;
 }
 
+QString SerialManagement::getSelectedPortDescription()
+{
+    return _portDescriptionIntendedConnection;
+}
+
 void SerialManagement::setBaudRateMode(int mode)
 {
     /* Modes
@@ -93,9 +107,11 @@ void SerialManagement::microcontrollerConnection()
         _microcontrollerConnected = true;
         isConnected = true;
         buffer.clear();
-        elapsedTimer.restart();
         currentFlightPhase = 0;
-        simulationTimer->start(100);  // Simular cada 100ms
+        simulationTimer->start(100);
+        if (autoDataSaveStart && !isLogging) {
+            createFile();
+        }
         qDebug() << "Modo simulación activado";
         emit microcontrollerConnectionStatus(true);
         return;
@@ -105,10 +121,10 @@ void SerialManagement::microcontrollerConnection()
 
         if (QSerialPortInfo::availablePorts().size() > 0){
             bool foundPort = false;
-            foreach (const QSerialPortInfo &serial_info, QSerialPortInfo::availablePorts()) { // Find each microcontroller available for connection
-                if (serial_info.description() == _portDescriptionIntendedConnection) {    // If it detects the microcontroller selected by the user, it gets the data
+            foreach (const QSerialPortInfo &serial_info, QSerialPortInfo::availablePorts()) {
+                if (serial_info.description() == _portDescriptionIntendedConnection) {
                     foundPort = true;
-                    // Update important port parameters
+
                     _portDescription = _portDescriptionIntendedConnection;
                     _portName = serial_info.portName();
                     _vendorId = serial_info.vendorIdentifier();
@@ -177,11 +193,13 @@ void SerialManagement::microcontrollerConnection()
                             if(_MCU->isWritable()){
                                 _microcontrollerConnected = true;
                                 isConnected = true;
-                                elapsedTimer.restart();
                                 referencedTimeSetted = true;
                                 hasPreviousGpsFix = false;
                                 previousTelemetryTime = 0.0f;
                                 verticalSpeedEstimate = 0.0f;
+                                if (autoDataSaveStart && !isLogging) {
+                                    createFile();
+                                }
                                 emit microcontrollerConnectionStatus(_microcontrollerConnected);
                                 qDebug() << "CONEXIÓN SUPER EXTIOSA";
                                 connect(_MCU, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
@@ -205,7 +223,7 @@ void SerialManagement::microcontrollerConnection()
                 emit portNotFound();
             }
         }else{
-            _microcontrollerFoundOnConnection = false;  // If it does not find the microcontroller selected by the user
+            _microcontrollerFoundOnConnection = false;
             emit portNotFound();
         }
     }
@@ -217,16 +235,13 @@ void SerialManagement::onReadyRead()
         return;
     }    
 
-    // Read all available data    
     _serialData = _MCU->readAll();
     _serialBuffer += QString::fromUtf8(_serialData);
 
-    // Process complete messages
     while (_serialBuffer.contains("\r\n")) {
-        // Extract the first complete message
         int endIndex = _serialBuffer.indexOf("\r\n");
         completeMessage = _serialBuffer.left(endIndex);
-        _serialBuffer = _serialBuffer.mid(endIndex + 2); // Remove the processed message from the buffer
+        _serialBuffer = _serialBuffer.mid(endIndex + 2);
         emit logUpdate();
         qDebug() << "This is the complete message extracted: " << completeMessage;
         qDebug() << "Serial buffer remaining:" << _serialBuffer;
@@ -234,16 +249,34 @@ void SerialManagement::onReadyRead()
         if (completeMessage.size() > 2) {
             int cat = -1;
             QString payload;
+            const QString trimmedMessage = completeMessage.trimmed();
 
-            // Accept both "N:..." and "N,..." packet prefixes.
-            if (completeMessage[1] == ':' || completeMessage[1] == ',') {
-                cat = QString(completeMessage[0]).toInt();
-                payload = completeMessage.mid(2).trimmed();
+            if (trimmedMessage.size() > 2 && (trimmedMessage[1] == ':' || trimmedMessage[1] == ',')) {
+                cat = QString(trimmedMessage[0]).toInt();
+                payload = trimmedMessage.mid(2).trimmed();
             } else {
-                int splitIdx = completeMessage.indexOf(QRegularExpression("[:,]"));
+                int splitIdx = trimmedMessage.indexOf(QRegularExpression("[:,]"));
                 if (splitIdx > 0) {
-                    cat = completeMessage.left(splitIdx).toInt();
-                    payload = completeMessage.mid(splitIdx + 1).trimmed();
+                    bool catOk = false;
+                    int parsedCat = trimmedMessage.left(splitIdx).toInt(&catOk);
+                    if (catOk && parsedCat >= 0 && parsedCat <= 9) {
+                        cat = parsedCat;
+                        payload = trimmedMessage.mid(splitIdx + 1).trimmed();
+                    }
+                }
+
+                if (cat < 0) {
+                    const QStringList tokens = trimmedMessage.split(',', Qt::SkipEmptyParts);
+                    if (tokens.size() >= 3) {
+                        bool cycleOk = false;
+                        bool catOk = false;
+                        tokens[0].toInt(&cycleOk);
+                        int parsedCat = tokens[1].toInt(&catOk);
+                        if (cycleOk && catOk && parsedCat >= 0 && parsedCat <= 9) {
+                            cat = parsedCat;
+                            payload = tokens.mid(2).join(",");
+                        }
+                    }
                 }
             }
 
@@ -262,14 +295,16 @@ void SerialManagement::onReadyRead()
                 coreDataUpdate();
 
             }else if (cat == 1){
-                // Handle other categories if needed
+
             }else if(cat == 2){
                 if (!data.isEmpty()) {
                     telemetryStatus = data.first().toInt();
                 }
-                //telemetryStatusUpdate();
+
             }else if(cat == 3){
-                // IMU + GPS packet: Ax,Ay,Az,Gx,Gy,Gz,Lat,Lon[,status]
+                // IMU + GPS packet can arrive as:
+                // Ax,Ay,Az,Gx,Gy,Gz,Lat,Lon
+                // or Ax,Ay,Az,Gx,Gy,Gz,Alt,Vel,Lat,Lon,Temp,Volt[,status]
                 if (data.length() >= 8) {
                     float Ax = data[0].toFloat();
                     float Ay = data[1].toFloat();
@@ -277,8 +312,20 @@ void SerialManagement::onReadyRead()
                     float Gx = data[3].toFloat();
                     float Gy = data[4].toFloat();
                     float Gz = data[5].toFloat();
-                    float lat = data[6].toFloat();
-                    float lon = data[7].toFloat();
+                    float packetAlt = std::numeric_limits<float>::quiet_NaN();
+                    float packetSpeed = std::numeric_limits<float>::quiet_NaN();
+                    float lat = 0.0f;
+                    float lon = 0.0f;
+
+                    if (data.length() >= 10) {
+                        packetAlt = data[6].toFloat();
+                        packetSpeed = data[7].toFloat();
+                        lat = data[8].toFloat();
+                        lon = data[9].toFloat();
+                    } else {
+                        lat = data[6].toFloat();
+                        lon = data[7].toFloat();
+                    }
 
                     _accelXDataListFloat.append(Ax);
                     _accelYDataListFloat.append(Ay);
@@ -298,73 +345,135 @@ void SerialManagement::onReadyRead()
                     if (_newerLatValueList.count() > _maxDataMemory) _newerLatValueList.removeFirst();
                     if (_newerLonValueList.count() > _maxDataMemory) _newerLonValueList.removeFirst();
 
-                    lastAcceleration = std::sqrt(Ax*Ax + Ay*Ay + Az*Az);
-                    emit telemetryUpdated(Ax, Ay, Az, Gx, Gy, Gz, lat, lon);
-                    emit accelerationUpdated(lastAcceleration);
-
-                    if (!elapsedTimer.isValid()) {
-                        elapsedTimer.start();
+                    if (std::isfinite(packetAlt)) {
+                        lastAltitude = qMax(0.0f, packetAlt);
+                        _currentAltDataListFloat.append(lastAltitude);
+                        if (_currentAltDataListFloat.count() > _maxDataMemory) {
+                            _currentAltDataListFloat.removeFirst();
+                        }
+                        emit altitudeUpdated(lastAltitude);
                     }
 
-                    float elapsedSeconds = elapsedTimer.elapsed() / 1000.0f;
-                    emit timeUpdated(elapsedSeconds);
+                    if (std::isfinite(packetSpeed) && packetSpeed >= 0.0f) {
+                        lastSpeed = packetSpeed;
+                        _currentSpeedDataListFloat.append(lastSpeed);
+                        if (_currentSpeedDataListFloat.count() > _maxDataMemory) {
+                            _currentSpeedDataListFloat.removeFirst();
+                        }
+                    }
 
-                    // Fallback for missions that only stream IMU+GPS packets.
-                    if (hasPreviousGpsFix) {
-                        float dt = elapsedSeconds - previousTelemetryTime;
-                        if (dt > 0.01f) {
-                            constexpr float earthRadiusMeters = 6371000.0f;
-                            const float lat1 = qDegreesToRadians(previousLat);
-                            const float lat2 = qDegreesToRadians(lat);
-                            const float dLat = lat2 - lat1;
-                            const float dLon = qDegreesToRadians(lon - previousLon);
-                            const float a = qSin(dLat / 2.0f) * qSin(dLat / 2.0f)
-                                            + qCos(lat1) * qCos(lat2)
-                                            * qSin(dLon / 2.0f) * qSin(dLon / 2.0f);
-                            const float c = 2.0f * qAtan2(qSqrt(a), qSqrt(1.0f - a));
-                            const float distanceMeters = earthRadiusMeters * c;
+                    lastAcceleration = std::sqrt(Ax*Ax + Ay*Ay + Az*Az);
+                    emit accelerationUpdated(lastAcceleration);
 
-                            const float gpsSpeed = qBound(0.0f, distanceMeters / dt, 600.0f);
-                            lastSpeed = 0.65f * lastSpeed + 0.35f * gpsSpeed;
+                    const float elapsedSeconds = elapsedTimer.elapsed() / 1000.0f;
+                    const float dt = previousTelemetryTime > 0.0f
+                        ? (elapsedSeconds - previousTelemetryTime)
+                        : 0.0f;
 
-                            const float verticalAcceleration = Az - 9.80665f;
-                            verticalSpeedEstimate = (verticalSpeedEstimate + verticalAcceleration * dt) * 0.98f;
+                    if (hasPreviousGpsFix && dt > 0.01f) {
+                        const float prevLatRad = qDegreesToRadians(previousLat);
+                        const float prevLonRad = qDegreesToRadians(previousLon);
+                        const float latRad = qDegreesToRadians(lat);
+                        const float lonRad = qDegreesToRadians(lon);
+
+                        const float dLat = latRad - prevLatRad;
+                        const float dLon = lonRad - prevLonRad;
+                        const float a = std::pow(std::sin(dLat / 2.0f), 2)
+                                      + std::cos(prevLatRad) * std::cos(latRad)
+                                      * std::pow(std::sin(dLon / 2.0f), 2);
+                        const float c = 2.0f * std::atan2(std::sqrt(a), std::sqrt(1.0f - a));
+                        const float earthRadiusMeters = 6371000.0f;
+                        const float distanceMeters = earthRadiusMeters * c;
+                        const float gpsSpeed = distanceMeters / dt;
+
+                        if (std::isfinite(gpsSpeed) && gpsSpeed >= 0.0f && gpsSpeed < 1000.0f) {
+                            lastSpeed = gpsSpeed;
+                            _currentSpeedDataListFloat.append(lastSpeed);
+                            if (_currentSpeedDataListFloat.count() > _maxDataMemory) {
+                                _currentSpeedDataListFloat.removeFirst();
+                            }
+                        }
+
+                        const float gravity = 9.80665f;
+                        verticalSpeedEstimate += (Az - gravity) * dt;
+                        if (!std::isfinite(verticalSpeedEstimate)) {
+                            verticalSpeedEstimate = 0.0f;
+                        }
+                        verticalSpeedEstimate = qBound(-200.0f, verticalSpeedEstimate, 200.0f);
+
+                        if (!std::isfinite(packetAlt)) {
                             lastAltitude = qMax(0.0f, lastAltitude + verticalSpeedEstimate * dt);
+                            _currentAltDataListFloat.append(lastAltitude);
+                            if (_currentAltDataListFloat.count() > _maxDataMemory) {
+                                _currentAltDataListFloat.removeFirst();
+                            }
+                            emit altitudeUpdated(lastAltitude);
                         }
                     }
 
                     emit speedUpdated(lastSpeed);
-                    emit altitudeUpdated(lastAltitude);
+
+                    previousTelemetryTime = elapsedSeconds;
 
                     previousLat = lat;
                     previousLon = lon;
-                    previousTelemetryTime = elapsedSeconds;
                     hasPreviousGpsFix = true;
 
-                    if (data.length() >= 9) {
-                        telemetryStatus = data[8].toInt();
+                    const bool hasStatus = data.length() >= 13;
+                    if (hasStatus) {
+                        telemetryStatus = data[12].toInt();
                     }
 
-                    int flightPhase = 0;
-                    if (telemetryStatus >= 6) {
-                        flightPhase = 3;
-                    } else if (telemetryStatus >= 3) {
-                        flightPhase = 2;
-                    } else if (telemetryStatus >= 2) {
-                        flightPhase = 1;
+                    if (autoDataSaveStart && !isLogging) {
+                        createFile();
                     }
+
+                    if (autoDataSaveFinish && isLogging && telemetryStatus >= 6) {
+                        closeFile();
+                    }
+
+                    int flightPhase = currentFlightPhase;
+                    if (hasStatus) {
+                        if (telemetryStatus >= 6) {
+                            flightPhase = 3;
+                        } else if (telemetryStatus >= 3) {
+                            flightPhase = 2;
+                        } else if (telemetryStatus >= 2) {
+                            flightPhase = 1;
+                        } else {
+                            flightPhase = 0;
+                        }
+                    } else {
+                        if (lastAltitude > 5.0f) {
+                            flightPhase = qMax(flightPhase, 1);
+                        }
+                        if (flightPhase < 2 && lastAltitude > 20.0f && verticalSpeedEstimate < -1.0f) {
+                            flightPhase = 2;
+                        }
+                        if (flightPhase >= 2 && lastAltitude < 5.0f) {
+                            flightPhase = 3;
+                        }
+                    }
+                    currentFlightPhase = flightPhase;
                     emit flightPhaseUpdated(flightPhase);
 
-                    // Optional extra values after status: voltage and temperature.
-                    if (data.length() >= 11) {
-                        lastVoltage = data[9].toFloat();
+                    if (data.length() >= 12) {
                         lastTemperature = data[10].toFloat();
+                        lastVoltage = data[11].toFloat();
                         emit voltageUpdated(lastVoltage);
                         emit temperatureUpdated(lastTemperature);
                     }
+
+                    emit telemetryUpdated(Ax, Ay, Az,
+                                          Gx, Gy, Gz,
+                                          lastAltitude, lastSpeed,
+                                          lat, lon,
+                                          lastTemperature, lastVoltage);
+
+                    writeDataFile();
                 }
             }else if(cat == 4){
-                // Auxiliary packet for electrical/environmental data.
+
                 if (data.length() >= 1) {
                     lastVoltage = data[0].toFloat();
                     emit voltageUpdated(lastVoltage);
@@ -374,13 +483,21 @@ void SerialManagement::onReadyRead()
                     emit temperatureUpdated(lastTemperature);
                 }
             }else if(cat == 6){
-                // Auxiliary packet for altitude/speed if firmware sends split telemetry.
+
                 if (data.length() >= 1) {
                     lastAltitude = data[0].toFloat();
+                    _currentAltDataListFloat.append(lastAltitude);
+                    if (_currentAltDataListFloat.count() > _maxDataMemory) {
+                        _currentAltDataListFloat.removeFirst();
+                    }
                     emit altitudeUpdated(lastAltitude);
                 }
                 if (data.length() >= 2) {
                     lastSpeed = data[1].toFloat();
+                    _currentSpeedDataListFloat.append(lastSpeed);
+                    if (_currentSpeedDataListFloat.count() > _maxDataMemory) {
+                        _currentSpeedDataListFloat.removeFirst();
+                    }
                     emit speedUpdated(lastSpeed);
                 }
             }
@@ -395,10 +512,7 @@ void SerialManagement::coreDataUpdate()
         qDebug() << "Lista con elementos faltantes";
         return;
     }
-    /* _coreDataList
-     *  0               1   2   3    4    5    6    7   8               9   10   11
-     *  cycleNumber     Ax  Ay  Az  Anx  Any  Anz  Alt  currentStage    Vel Lat Lon
-    */
+
     qDebug() << "LISTA ES: " << _coreDataList;
 
     // Accel
@@ -475,7 +589,6 @@ void SerialManagement::coreDataUpdate()
     //qDebug() << "Status " << telemetryStatus;
 
     // Emit updates for the QML UI.
-    float elapsedSeconds = _coreDataList[0].toFloat();
     float Ax = _coreDataList[1].toFloat();
     float Ay = _coreDataList[2].toFloat();
     float Az = _coreDataList[3].toFloat();
@@ -488,11 +601,14 @@ void SerialManagement::coreDataUpdate()
     float lon = _coreDataList[11].toFloat();
     lastAcceleration = std::sqrt(Ax*Ax + Ay*Ay + Az*Az);
 
-    emit timeUpdated(elapsedSeconds);
     emit altitudeUpdated(lastAltitude);
     emit speedUpdated(lastSpeed);
     emit accelerationUpdated(lastAcceleration);
-    emit telemetryUpdated(Ax, Ay, Az, Gx, Gy, Gz, lat, lon);
+    emit telemetryUpdated(Ax, Ay, Az,
+                          Gx, Gy, Gz,
+                          lastAltitude, lastSpeed,
+                          lat, lon,
+                          lastTemperature, lastVoltage);
 
     int flightPhase = 0;
     if (telemetryStatus >= 6) {
@@ -502,6 +618,7 @@ void SerialManagement::coreDataUpdate()
     } else if (telemetryStatus >= 2) {
         flightPhase = 1;
     }
+    currentFlightPhase = flightPhase;
     emit flightPhaseUpdated(flightPhase);
 
     if (!referencedTimeSetted && telemetryStatus==1){
@@ -509,11 +626,11 @@ void SerialManagement::coreDataUpdate()
         referencedTimeSetted = true;
     }
 
-    if(telemetryStatus==1 && autoDataSaveStart && !isLogging){
+    if(autoDataSaveStart && !isLogging){
         createFile();
     }
 
-    if(telemetryStatus==6 && autoDataSaveFinish && isLogging){
+    if(autoDataSaveFinish && isLogging && telemetryStatus >= 6){
         closeFile();
     }
 
@@ -525,7 +642,6 @@ void SerialManagement::coreDataUpdate()
 void SerialManagement::simulateData()
 {
     float elapsedSeconds = elapsedTimer.elapsed() / 1000.0f;
-    emit timeUpdated(elapsedSeconds);
 
     // Simular telemetría IMU
     float Ax = (rand() % 2000 - 1000) / 100.0f;
@@ -600,7 +716,11 @@ void SerialManagement::simulateData()
     _coreDataList.append(QString::number(lat, 'f', 7));
     _coreDataList.append(QString::number(lon, 'f', 7));
 
-    emit telemetryUpdated(Ax, Ay, Az, Gx, Gy, Gz, lat, lon);
+    emit telemetryUpdated(Ax, Ay, Az,
+                          Gx, Gy, Gz,
+                          lastAltitude, lastSpeed,
+                          lat, lon,
+                          lastTemperature, lastVoltage);
     coreDataUpdate();
 
     if (isLogging && dataStream) {
@@ -636,14 +756,20 @@ void SerialManagement::simulateData()
 
 void SerialManagement::endConnection()
 {
+    if (isLogging && autoDataSaveFinish) {
+        closeFile();
+    }
+
     if (simulationMode) {
         simulationTimer->stop();
+        simulationMode = false;
     } else {
         if (_MCU->isOpen()) {
             _MCU->close();
         }
     }
     isConnected = false;
+    _microcontrollerConnected = false;
     hasPreviousGpsFix = false;
     previousTelemetryTime = 0.0f;
     verticalSpeedEstimate = 0.0f;
@@ -688,6 +814,24 @@ void SerialManagement::changeRocketFrequency(QString value)
     qDebug() << "Frecuencia actualizada:" << rocketFrequency;
 }
 
+void SerialManagement::setEstApogeeAlt(int value)
+{
+    expectedApogeeAlt = qMax(0, value);
+    qDebug() << "Apogeo estimado actualizado:" << expectedApogeeAlt;
+}
+
+void SerialManagement::setEstMainAlt(int value)
+{
+    expectedMainAlt = qMax(0, value);
+    qDebug() << "Main deploy estimado actualizado:" << expectedMainAlt;
+}
+
+void SerialManagement::setEstTouchDownAlt(int value)
+{
+    expectedTouchDownAlt = qMax(0, value);
+    qDebug() << "Touchdown estimado actualizado:" << expectedTouchDownAlt;
+}
+
 void SerialManagement::createFile()
 {
     if (isLogging) {
@@ -709,20 +853,24 @@ void SerialManagement::createFile()
     QString route = dir.filePath(fileName + ".csv");
     dataFile = new QFile(route);
     if (dataFile->open(QIODevice::WriteOnly | QIODevice::Text)) {
+        logFileName = route;
         dataStream = new QTextStream(dataFile);
-        *dataStream << "s" << "," 
+        *dataStream << "start" << ","
                     << "Ax" << "," 
                     << "Ay" << "," 
                     << "Az" << "," 
-                    << "Anz" << "," 
-                    << "Anz" << "," 
-                    << "Anz" << "," 
+                    << "Gx" << "," 
+                    << "Gy" << "," 
+                    << "Gz" << "," 
                     << "Alt" << "," 
-                    << "Lat" << "," 
-                    << "Lon" << "," 
-                    << "Speed" << "," 
-                    << "R. Status" << "," 
+                    << "Vel" << ","
+                    << "Lat" << ","
+                    << "Lon" << ","
+                    << "Temp" << ","
+                    << "Volt" << ","
+                    << "Fin" << ","
                     << "\n";
+        dataStream->flush();
 
         isLogging = true;
         qDebug() << "Archivo abierto para escritura.";
@@ -766,20 +914,35 @@ void SerialManagement::closeFile()
 void SerialManagement::writeDataFile()
 {
     if (isLogging && dataStream) {
-        //qDebug() << "Escribiendo en archivo";
+        const float ax = _accelXDataListFloat.isEmpty() ? 0.0f : _accelXDataListFloat.last();
+        const float ay = _accelYDataListFloat.isEmpty() ? 0.0f : _accelYDataListFloat.last();
+        const float az = _accelZDataListFloat.isEmpty() ? 0.0f : _accelZDataListFloat.last();
+        const float gx = _angleXDataListFloat.isEmpty() ? 0.0f : _angleXDataListFloat.last();
+        const float gy = _angleYDataListFloat.isEmpty() ? 0.0f : _angleYDataListFloat.last();
+        const float gz = _angleZDataListFloat.isEmpty() ? 0.0f : _angleZDataListFloat.last();
+        const float alt = _currentAltDataListFloat.isEmpty() ? 0.0f : _currentAltDataListFloat.last();
+        const float speed = _currentSpeedDataListFloat.isEmpty() ? 0.0f : _currentSpeedDataListFloat.last();
+        const float lat = _newerLatValueList.isEmpty() ? 0.0f : _newerLatValueList.last();
+        const float lon = _newerLonValueList.isEmpty() ? 0.0f : _newerLonValueList.last();
+        const float temp = lastTemperature;
+        const float volt = lastVoltage;
+
         *dataStream << getActualTime() << ","
-                    << getLastDataInList(1,-1) << "," // Ax
-                    << getLastDataInList(2,-1) << "," // Ay
-                    << getLastDataInList(3,-1) << "," // Az
-                    << getLastDataInList(4,-1) << "," // Anx
-                    << getLastDataInList(5,-1) << "," // Any
-                    << getLastDataInList(6,-1) << "," // Anz
-                    << getLastDataInList(7,-1) << "," // Alt
-                    << getLastDataInList(10,-1) << "," // Lat
-                    << getLastDataInList(11,-1) << "," // Lon
-                    << getLastDataInList(12,-1) << "," // Speed
+                    << ax << ","
+                    << ay << ","
+                    << az << ","
+                    << gx << ","
+                    << gy << ","
+                    << gz << ","
+                    << alt << ","
+                    << speed << ","
+                    << lat << ","
+                    << lon << ","
+                    << temp << ","
+                    << volt << ","
                     << getTelemetryStatus() << "," // Rocket Status
                     << "\n";
+        dataStream->flush();
     } else{
         qDebug() << "No se pudo abrir el archivo";
     }
@@ -839,6 +1002,7 @@ void SerialManagement::setReferenceTime()
 {
     qDebug() << "Reset de tiempo de referencia";
     elapsedTimer.restart();
+    emit timeUpdated(0.0f);
     
     if (isLogging && dataStream) {
         *dataStream << QString("EVENT,%1,TIME_REFERENCE_RESET\n")
@@ -848,8 +1012,8 @@ void SerialManagement::setReferenceTime()
 }
 
 void SerialManagement::sendData(QString data) {     // To send data to the arduino
-    if(_MCU -> isWritable()){  // Make sure that is possible to write through the serial port
-        _MCU -> write(data.toUtf8());  // Send the data
+    if(_MCU -> isWritable()){
+        _MCU -> write(data.toUtf8());
         qDebug() << "Se envio " << data;
     } else {
         emit dataNotSent();
@@ -860,8 +1024,8 @@ void SerialManagement::sendData(QString data) {     // To send data to the ardui
 void SerialManagement::sendFrequencyChange()
 {
     QString data = QStringLiteral("l ") + rocketFrequency;
-    if(_MCU -> isWritable()){  // Make sure that is possible to write through the serial port
-        _MCU -> write(data.toUtf8());  // Send the data
+    if(_MCU -> isWritable()){
+        _MCU -> write(data.toUtf8());
         qDebug() << "Se envio el cambio de frequencia" << data;
     } else {
         emit dataNotSent();
@@ -871,28 +1035,6 @@ void SerialManagement::sendFrequencyChange()
 
 float SerialManagement::getLastDataInList(int list, int pos)
 {
-    /*
-     * Get the data in the position specified:
-     * Use 1 for access the first data in the array (newest value)
-     * Use -1 for acess the last data in the array (oldest value)
-     * Use any oyjer number to acess the data in that pos (the greater the value, the oldest it is)
-     *
-     * The lists that can be acess are
-     * 1 for Accel in X
-     * 2 for Accel in Y
-     * 3 for Accel in Z
-     * 4 for Angle in X
-     * 4 for Angle in Y
-     * 6 for Angle in Z
-     * 7 for current Alt
-     * 8 for newer Lat values
-     * 9 for newer Lon values
-     * 10 for older Lat values
-     * 11 for older Lon values
-     * 12 for current speed
-
-    */
-
     const QList<float>* dataList = nullptr;
 
     switch (list) {
@@ -1006,12 +1148,6 @@ float SerialManagement::getAbsMaxMinDataInLists(QList<int> lists, bool maxBool)
 
 float SerialManagement::getDataConvertedImperial(int dataWanted)
 {
-/*
-    FUnction to get the data converted from SI to imperial units
-
-    1 -> Last alttiude value
-    2 -> Last speed value
-*/
     switch(dataWanted){
         case 1:
             return getLastDataInList(7,-1)*3.28084;
@@ -1067,4 +1203,14 @@ int SerialManagement::getEstMainAlt()
 int SerialManagement::getEstTouchDownAlt()
 {
     return expectedTouchDownAlt;
+}
+
+void SerialManagement::updateMissionElapsedTime()
+{
+    if (!elapsedTimer.isValid()) {
+        return;
+    }
+
+    float elapsedSeconds = elapsedTimer.elapsed() / 1000.0f;
+    emit timeUpdated(elapsedSeconds);
 }

@@ -27,10 +27,10 @@ Rectangle {
 
     property string latitudeText: "0.0000000 N"
     property string longitudeText: "0.0000000 W"
-    property string altitudeFtText: "0 ft"
-    property string altitudeMText: "0 m"
-    property string speedFtText: "0 ft/s"
-    property string speedMText: "0 m/s"
+    property string altitudeFtText: "--"
+    property string altitudeMText: "--"
+    property string speedFtText: "--"
+    property string speedMText: "--"
     property string accelerationFtText: "0 ft/s²"
     property string accelerationMText: "0 m/s²"
     property string voltageText: "0.00 v"
@@ -92,7 +92,7 @@ Rectangle {
                     anchors.topMargin: 89
                     anchors.bottomMargin: 60
                     font.weight: Font.Thin
-                    font.pointSize: 22
+                    font.pointSize: 18
                     font.family: "Calistoga"
                 }
 
@@ -109,7 +109,7 @@ Rectangle {
                     anchors.topMargin: 133
                     anchors.bottomMargin: 16
                     font.weight: Font.Thin
-                    font.pointSize: 22
+                    font.pointSize: 18
                     font.family: "Calistoga"
                 }
 
@@ -165,7 +165,7 @@ Rectangle {
                     color: Constants.fontSecondary
                     text: altitudeFtText
                     font.weight: Font.Thin
-                    font.pointSize: 22
+                    font.pointSize: 18
                     font.family: "Calistoga"
                 }
 
@@ -182,7 +182,7 @@ Rectangle {
                     anchors.topMargin: 126
                     anchors.bottomMargin: 23
                     font.weight: Font.Thin
-                    font.pointSize: 22
+                    font.pointSize: 18
                     font.family: "Calistoga"
                 }
 
@@ -241,12 +241,12 @@ Rectangle {
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
                     anchors.leftMargin: 67
-                    anchors.rightMargin: 61
+                    anchors.rightMargin: 78
                     anchors.topMargin: 89
-                    anchors.bottomMargin: 60
+                    anchors.bottomMargin: 73
                     verticalAlignment: Text.AlignTop
                     font.weight: Font.Thin
-                    font.pointSize: 22
+                    font.pointSize: 18
                     font.family: "Calistoga"
                 }
 
@@ -280,7 +280,7 @@ Rectangle {
                     anchors.topMargin: 133
                     anchors.bottomMargin: 16
                     font.weight: Font.Thin
-                    font.pointSize: 22
+                    font.pointSize: 18
                     font.family: "Calistoga"
                 }
 
@@ -454,8 +454,8 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 1500
-                    anchors.rightMargin: 375
+                    anchors.leftMargin: 1317
+                    anchors.rightMargin: 558
                     anchors.topMargin: 0
                     anchors.bottomMargin: 47
                     source: "images/voltaje.svg"
@@ -482,10 +482,10 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 1500
-                    anchors.rightMargin: 375
-                    anchors.topMargin: 45
-                    anchors.bottomMargin: 2
+                    anchors.leftMargin: 1317
+                    anchors.rightMargin: 558
+                    anchors.topMargin: 47
+                    anchors.bottomMargin: 0
                     source: "images/tempe (1).svg"
                     anchors.verticalCenterOffset: -494
                     fillMode: Image.PreserveAspectFit
@@ -518,8 +518,8 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 889
-                    anchors.rightMargin: 773
+                    anchors.leftMargin: 782
+                    anchors.rightMargin: 880
                     anchors.topMargin: 17
                     anchors.bottomMargin: 13
                     anchors.verticalCenterOffset: -494
@@ -536,10 +536,10 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 1560
-                    anchors.rightMargin: 261
-                    anchors.topMargin: 0
-                    anchors.bottomMargin: 49
+                    anchors.leftMargin: 1381
+                    anchors.rightMargin: 440
+                    anchors.topMargin: 2
+                    anchors.bottomMargin: 47
                     anchors.verticalCenterOffset: -494
                     font.weight: Font.ExtraBold
                     font.pointSize: 25
@@ -554,10 +554,10 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 1560
-                    anchors.rightMargin: 302
-                    anchors.topMargin: 45
-                    anchors.bottomMargin: 4
+                    anchors.leftMargin: 1423
+                    anchors.rightMargin: 440
+                    anchors.topMargin: 49
+                    anchors.bottomMargin: 0
                     anchors.verticalCenterOffset: -494
                     font.weight: Font.ExtraBold
                     font.pointSize: 25
@@ -584,8 +584,8 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 1689
-                    anchors.rightMargin: 139
+                    anchors.leftMargin: 1549
+                    anchors.rightMargin: 279
                     anchors.topMargin: 0
                     anchors.bottomMargin: 0
                     source: "images/logoU.svg"
@@ -598,6 +598,44 @@ Rectangle {
                     y: -94
                     source: "images/logoU.svg"
                     fillMode: Image.PreserveAspectFit
+                }
+
+                Text {
+                    id: nameMission1
+                    color: Constants.fontPrimary
+                    text: "TEAM "
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.bottom: parent.bottom
+                    anchors.leftMargin: 1647
+                    anchors.rightMargin: 149
+                    anchors.topMargin: 0
+                    anchors.bottomMargin: 32
+                    font.weight: Font.Thin
+                    font.pointSize: 30
+                    font.family: "Calistoga"
+                    clip: false
+                    anchors.verticalCenterOffset: -494
+                }
+
+                Text {
+                    id: nameMission2
+                    color: Constants.fontPrimary
+                    text: "41"
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.bottom: parent.bottom
+                    anchors.leftMargin: 1684
+                    anchors.rightMargin: 112
+                    anchors.topMargin: 40
+                    anchors.bottomMargin: -8
+                    font.weight: Font.Thin
+                    font.pointSize: 30
+                    font.family: "Calistoga"
+                    clip: false
+                    anchors.verticalCenterOffset: -494
                 }
             }
 

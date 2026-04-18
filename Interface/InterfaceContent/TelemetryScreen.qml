@@ -4,7 +4,6 @@ import QtCharts
 import Interface
 
 TelemetryScreenForm {
-    // guardo los datos para hacer la grafica
     property var timeData: []
     property var altitudeData: []
     property var speedData: []
@@ -17,7 +16,6 @@ TelemetryScreenForm {
     property real maxAcceleration: 0.0
     property int dataPointsCount: 0
     
-    // conexión al serialManager para recibir los datos
     Connections {
         target: typeof serialManager !== "undefined" ? serialManager : null
 
@@ -49,7 +47,6 @@ TelemetryScreenForm {
         }
     }
 
-    // agrega los datos a los arreglos segun el tipo
     function addDataPoint(dataType, value) {
         let currentTime = timeData.length > 0 ? timeData[timeData.length - 1] + 1 : 0
         
@@ -77,7 +74,6 @@ TelemetryScreenForm {
         
         dataPointsCount++
     }
-
     // para actualizar todas las graficas
     function updateAllCharts() {
         updateAltitudeChart()
@@ -138,7 +134,6 @@ TelemetryScreenForm {
 
     function exportDataToCSV() {
         if (typeof serialManager !== "undefined" && serialManager) {
-            // Esta función podría implementarse en C++ para exportar datos
             console.log("Exportando datos a CSV...")
         }
     }
@@ -161,8 +156,6 @@ TelemetryScreenForm {
 
     Component.onCompleted: {
         console.log("TelemetryScreen cargado correctamente")
-        
-        // Verificar que serialManager está disponible
         if (typeof serialManager !== "undefined" && serialManager) {
             console.log("serialManager disponible en TelemetryScreen")
         } else {

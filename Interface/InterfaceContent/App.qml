@@ -97,16 +97,6 @@ Window {
                     if (hasManager) serialManager.sendData('x');
                     break;
 
-                case Qt.Key_F:
-                    console.log("Apagado remoto de cámaras");
-                    if (hasManager) serialManager.sendData('f');
-                    break;
-
-                case Qt.Key_O:
-                    console.log("Encendido remoto de cámaras");
-                    if (hasManager) serialManager.sendData('o');
-                    break;
-
                 case Qt.Key_S:
                     console.log("Confirmación de estación terrena");
                     if (hasManager) serialManager.sendData('s');

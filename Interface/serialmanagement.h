@@ -24,6 +24,7 @@ public:
 
     Q_INVOKABLE QStringList searchPortInfo();
     Q_INVOKABLE void savePortConnection(QString port);
+    Q_INVOKABLE QString getSelectedPortDescription();
     Q_INVOKABLE void setBaudRateMode(int index);
     Q_INVOKABLE void microcontrollerConnection();
     Q_INVOKABLE void endConnection();
@@ -32,6 +33,9 @@ public:
     Q_INVOKABLE void writeIntValue(int id, int value);
     Q_INVOKABLE void writeStringValue(int id, QString value);
     Q_INVOKABLE void changeRocketFrequency(QString value);
+    Q_INVOKABLE void setEstApogeeAlt(int value);
+    Q_INVOKABLE void setEstMainAlt(int value);
+    Q_INVOKABLE void setEstTouchDownAlt(int value);
     
     Q_INVOKABLE void createFile();
     Q_INVOKABLE void closeFile();
@@ -62,7 +66,8 @@ public:
 signals:
     void telemetryUpdated(float Ax, float Ay, float Az,
                           float Gx, float Gy, float Gz,
-                          float lat, float lon);
+                          float alt, float vel, float lat,
+                          float lon, float temp, float volt);
     
     void altitudeUpdated(float altitude);
     void speedUpdated(float speed);
@@ -88,6 +93,7 @@ private slots:
     void simulateData();
     void coreDataUpdate();
     void writeDataFile();
+    void updateMissionElapsedTime();
 
 private:
     QSerialPort *_MCU;
@@ -99,6 +105,7 @@ private:
     
     bool simulationMode = false;
     QTimer *simulationTimer = nullptr;
+    QTimer *missionTimer = nullptr;
     
     float lastAltitude = 0.0f;
     float lastSpeed = 0.0f;

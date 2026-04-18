@@ -6,7 +6,6 @@ MainScreenForm {
     id: mainScreenRoot
     signal showControlPanelRequested()
 
-    // para guardar todos los datos que llegan del micro
     property real latitude: 0.0
     property real longitude: 0.0
     property real altitude: 0.0
@@ -25,7 +24,6 @@ MainScreenForm {
         target: typeof serialManager !== "undefined" ? serialManager : null
 
         function onTelemetryUpdated(Ax, Ay, Az, Gx, Gy, Gz, lat, lon) {
-            // actualizo lat y lon
             latitude = lat
             longitude = lon
 
@@ -99,9 +97,7 @@ MainScreenForm {
             console.log("MainScreen - Tiempo actualizado: " + timeStr)
         }
 
-        // función para actualizar la barra de progreso segun la fase del vuelo
         function onFlightPhaseUpdated(phase) {
-
             flightPhaseValue = phase + 1
 
             console.log("MainScreen - Fase de vuelo actualizada: " + phase)
@@ -130,6 +126,8 @@ MainScreenForm {
         try {
             if (loader && loader.item) {
                 let chart = loader.item.spline
+                let axisX = loader.item.axisX
+                let axisY = loader.item.axisY
                 if (chart) {
                     console.log("MainScreen - Actualizando gráfico con " + timeData.length + " puntos")
                     
@@ -138,15 +136,15 @@ MainScreenForm {
                     }
 
                     let series = chart.createSeries(ChartView.SeriesTypeSpline, "Altitude (m)", 
-                                                     chart.axisX, chart.axisY)
+                                                     axisX, axisY)
                     
                     for (let i = 0; i < timeData.length; i++) {
                         series.append(timeData[i], altitudeData[i])
                     }
 
                     let maxTime = timeData.length > 0 ? timeData[timeData.length - 1] : 100
-                    chart.axisX.max = Math.max(100, maxTime * 1.1)
-                    chart.axisY.max = Math.max(1000, maxAltitude * 1.2)
+                    axisX.max = Math.max(100, maxTime * 1.1)
+                    axisY.max = Math.max(1000, maxAltitude * 1.2)
                     
                     console.log("MainScreen - Gráfico actualizado. Máx Altitud: " + maxAltitude)
                 }
@@ -164,6 +162,7 @@ MainScreenForm {
         repeat: true
 
         onTriggered: {
+            // Enviar datos de prueba
             let testTime = testDataTimer.triggeredOnStart ? 0 : (testTime + 1)
             let testAlt = 500 * Math.sin((testTime * Math.PI) / 30) + 500
             
@@ -180,7 +179,7 @@ MainScreenForm {
     function exportCurrentData() {
         if (typeof serialManager !== "undefined" && serialManager) {
             console.log("Exportando datos actuales...")
-
+            // Crear un archivo temporal con los datos actuales
             let exportData = "Type,Timestamp,Value\n"
             exportData += "ALTITUDE," + time + "," + altitude + "\n"
             exportData += "SPEED," + time + "," + speed + "\n"
@@ -213,7 +212,7 @@ MainScreenForm {
     }
 
     function requestControlPanel() {
-        console.log("MainScreen solicitando ControlPanel")
+        console.log("MainScreen - flor clickeada, solicitando ControlPanel")
         showControlPanelRequested()
     }
 

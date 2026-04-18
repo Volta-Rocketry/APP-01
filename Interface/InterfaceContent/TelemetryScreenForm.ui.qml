@@ -21,6 +21,10 @@ Rectangle {
     width: Constants.designWidth
     height: Constants.designHeight
 
+    property alias spline: spline
+    property alias axisX: axisX
+    property alias axisY: axisY
+
     // Sección izquierda: Vista 3D del cohete (25% del ancho)
     Rectangle {
         id: rocket3dSection
