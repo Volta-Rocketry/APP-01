@@ -22,7 +22,6 @@ Rectangle {
     width: Constants.designWidth
     height: Constants.designHeight
 
-
     property alias content: content
     property alias loader: loader
 
@@ -42,7 +41,6 @@ Rectangle {
     property real speedDialValue: 0
     property real altitudeDialValue: 0
     property real accelerationDialValue: 0
-
 
     Item {
         id: content
@@ -136,7 +134,7 @@ Rectangle {
                 Dial {
                     id: dialAcceleration
                     from: 0
-                    to: 30
+                    to: 200
                     value: accelerationDialValue
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -290,7 +288,7 @@ Rectangle {
                 Dial {
                     id: dialSpeed
                     from: 0
-                    to: 1000
+                    to: 500
                     value: speedDialValue
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -719,12 +717,12 @@ Rectangle {
                     font.family: "Calistoga"
                 }
 
-                ProgressBar {
-                    id: progressBar
-
-                    from: 0
-                    to: 100
-                    value: missionProgressValue
+                // Progress Bar Background
+                Rectangle {
+                    id: progressBarBackground
+                    color: "#333333"
+                    radius: 8
+                    clip: true
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.top: parent.top
@@ -733,6 +731,22 @@ Rectangle {
                     anchors.rightMargin: 21
                     anchors.topMargin: 55
                     anchors.bottomMargin: 16
+
+                    // Progress Bar Fill
+                    Rectangle {
+                        id: progressBar
+                        color: "#FF8C00"
+                        radius: 8
+                        height: parent.height
+                        width: (missionProgressValue / 100) * parent.width
+                        
+                        Behavior on width {
+                            NumberAnimation {
+                                duration: 200
+                                easing.type: Easing.OutQuad
+                            }
+                        }
+                    }
                 }
             }
         }

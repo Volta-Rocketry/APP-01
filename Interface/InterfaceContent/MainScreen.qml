@@ -14,6 +14,8 @@ MainScreenForm {
     property real voltage: 0.0
     property real temperature: 0.0
     property real time: 0.0
+    property real missionProgressValue: 0.0
+    property int testSimulationSeconds: 0
 
     property var timeData: []
     property var altitudeData: []
@@ -38,11 +40,13 @@ MainScreenForm {
 
             altitudeFtText = (altitudeValue * 3.28084).toFixed(0) + " ft"
             altitudeMText = altitudeValue.toFixed(0) + " m"
-            altitudeDialValue = Math.max(0, Math.min(5000, altitudeValue))
+            altitudeDialValue = Math.max(0, Math.min(11000, altitudeValue * 3.28084))
 
             addAltitudeData(time, altitudeValue)
-
+            updateFlightProgress()
+            
             console.log("MainScreen - Altitud actualizada: " + altitudeValue + " m")
+            console.log("MainScreen - Progreso de misión: " + missionProgressValue.toFixed(1) + "%")
         }
 
         function onSpeedUpdated(speedValue) {
@@ -50,7 +54,7 @@ MainScreenForm {
 
             speedFtText = (speedValue * 3.28084).toFixed(1) + " ft/s"
             speedMText = speedValue.toFixed(1) + " m/s"
-            speedDialValue = Math.max(0, Math.min(600, speedValue))
+            speedDialValue = Math.max(0, Math.min(500, speedValue))
 
             console.log("MainScreen - Velocidad actualizada: " + speedValue + " m/s")
         }
@@ -60,7 +64,7 @@ MainScreenForm {
 
             accelerationFtText = (accelValue * 3.28084).toFixed(1) + " ft/s²"
             accelerationMText = accelValue.toFixed(1) + " m/s²"
-            accelerationDialValue = Math.max(0, Math.min(30, accelValue))
+            accelerationDialValue = Math.max(0, Math.min(200, accelValue))
 
             console.log("MainScreen - Aceleración actualizada: " + accelValue + " m/s²")
         }
@@ -88,17 +92,25 @@ MainScreenForm {
             let seconds = Math.floor(timeValue % 60)
             let milliseconds = Math.floor((timeValue % 1) * 100)
 
-            let timeStr = "T: " + String(minutes).padStart(2, '0') +
-                        ":" + String(seconds).padStart(2, '0') +
+            let timeStr = "T: " + String(minutes).padStart(2, '0') + 
+                        ":" + String(seconds).padStart(2, '0') + 
                         "." + String(milliseconds).padStart(2, '0')
 
             timeText = timeStr
+
+            // Actualizar progreso continuamente basado en status actual
+            updateFlightProgress()
+            
+            if (timeValue % 5 < 0.1) {
+                console.log("MainScreen - Tiempo: " + timeStr + ", Progreso: " + missionProgressValue.toFixed(1) + "%")
+            }
 
             console.log("MainScreen - Tiempo actualizado: " + timeStr)
         }
 
         function onFlightPhaseUpdated(phase) {
             flightPhaseValue = phase + 1
+            updateFlightProgress()
 
             console.log("MainScreen - Fase de vuelo actualizada: " + phase)
         }
@@ -122,6 +134,68 @@ MainScreenForm {
         }
     }
 
+    function updateFlightProgress() {
+        if (typeof serialManager === "undefined") {
+            return
+        }
+
+        const rocketStatus = serialManager.getTelemetryStatus()
+        let estApogeeAlt = serialManager.getEstApogeeAlt()
+        let estMainAlt = serialManager.getEstMainAlt()
+        const currentAlt = altitude
+
+        // Si no hay altitudes estimadas configuradas, usar máxima registrada o defaults
+        if (estApogeeAlt <= 0) {
+            estApogeeAlt = Math.max(3500, maxAltitude * 1.2)
+        }
+        if (estMainAlt <= 0) {
+            estMainAlt = Math.max(500, estApogeeAlt * 0.15)
+        }
+
+        let progressPercent = 0
+
+        console.log("DEBUG Progress - Status: " + rocketStatus + ", CurrentAlt: " + currentAlt.toFixed(1) + 
+                    ", EstApogee: " + estApogeeAlt + ", EstMain: " + estMainAlt)
+
+        if (rocketStatus === 1) {
+            // Idle
+            progressPercent = 0
+        } else if (rocketStatus === 2 || rocketStatus === 3) {
+            // Ascent or Boost
+            progressPercent = (currentAlt / estApogeeAlt) * 30
+            console.log("DEBUG Ascent - Progress: " + progressPercent.toFixed(1) + "%")
+        } else if (rocketStatus === 4) {
+            // Apogee
+            const apogeeRange = estApogeeAlt - estMainAlt
+            if (apogeeRange > 0) {
+                progressPercent = 30 + ((estApogeeAlt - currentAlt) / apogeeRange) * 30
+            } else {
+                progressPercent = 30
+            }
+            console.log("DEBUG Apogee - Progress: " + progressPercent.toFixed(1) + "%")
+        } else if (rocketStatus === 5) {
+            // Main Chute
+            progressPercent = 60 + ((estMainAlt - currentAlt) / estMainAlt) * 30
+            console.log("DEBUG Main - Progress: " + progressPercent.toFixed(1) + "%")
+        } else if (rocketStatus === 6) {
+            // Touch Down
+            progressPercent = 100
+            console.log("DEBUG Landing - Progress: 100%")
+        }
+
+        missionProgressValue = Math.max(0, Math.min(100, progressPercent))
+    }
+
+    function toggleTestDataTimer() {
+        const willRun = !testDataTimer.running
+        testDataTimer.running = willRun
+        if (willRun) {
+            testSimulationSeconds = 0
+        }
+        console.log("MainScreen - Timer de prueba " + (testDataTimer.running ? "activado" : "detenido"))
+        return testDataTimer.running
+    }
+
     function updateAltitudeChart() {
         try {
             if (loader && loader.item) {
@@ -130,14 +204,14 @@ MainScreenForm {
                 let axisY = loader.item.axisY
                 if (chart) {
                     console.log("MainScreen - Actualizando gráfico con " + timeData.length + " puntos")
-
+                    
                     while (chart.count > 0) {
                         chart.removeSeries(chart.series(0))
                     }
 
-                    let series = chart.createSeries(ChartView.SeriesTypeSpline, "Altitude (m)",
+                    let series = chart.createSeries(ChartView.SeriesTypeSpline, "Altitude (m)", 
                                                      axisX, axisY)
-
+                    
                     for (let i = 0; i < timeData.length; i++) {
                         series.append(timeData[i], altitudeData[i])
                     }
@@ -145,7 +219,7 @@ MainScreenForm {
                     let maxTime = timeData.length > 0 ? timeData[timeData.length - 1] : 100
                     axisX.max = Math.max(100, maxTime * 1.1)
                     axisY.max = Math.max(1000, maxAltitude * 1.2)
-
+                    
                     console.log("MainScreen - Gráfico actualizado. Máx Altitud: " + maxAltitude)
                 }
             }
@@ -162,10 +236,17 @@ MainScreenForm {
         repeat: true
 
         onTriggered: {
-            // Enviar datos de prueba
-            let testTime = testDataTimer.triggeredOnStart ? 0 : (testTime + 1)
-            let testAlt = 500 * Math.sin((testTime * Math.PI) / 30) + 500
+            testSimulationSeconds += 1
+            let testAlt = 500 * Math.sin((testSimulationSeconds * Math.PI) / 30) + 500
+            time = testSimulationSeconds
 
+            let minutes = Math.floor(testSimulationSeconds / 60)
+            let seconds = Math.floor(testSimulationSeconds % 60)
+            let milliseconds = 0
+            timeText = "T: " + String(minutes).padStart(2, '0') +
+                       ":" + String(seconds).padStart(2, '0') +
+                       "." + String(milliseconds).padStart(2, '0')
+            
             if (typeof serialManager !== "undefined" && serialManager) {
                 // Simulación de eventos
                 serialManager.altitudeUpdated(testAlt)
@@ -186,7 +267,7 @@ MainScreenForm {
             exportData += "ACCELERATION," + time + "," + acceleration + "\n"
             exportData += "VOLTAGE," + time + "," + voltage + "\n"
             exportData += "TEMPERATURE," + time + "," + temperature + "\n"
-
+            
             console.log("Datos exportados:\n" + exportData)
         }
     }
@@ -212,7 +293,7 @@ MainScreenForm {
     }
 
     function requestControlPanel() {
-        console.log("MainScreen, solicitando ControlPanel")
+        console.log("MainScreen - flor clickeada, solicitando ControlPanel")
         showControlPanelRequested()
     }
 
