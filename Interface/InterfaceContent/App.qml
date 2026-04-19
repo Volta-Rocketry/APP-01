@@ -88,6 +88,12 @@ Window {
                     if (hasManager) serialManager.setReferenceTime();
                     break;
 
+                case Qt.Key_F8:
+                    if (mainLoader.item && mainLoader.item.toggleTestDataTimer) {
+                        mainLoader.item.toggleTestDataTimer();
+                    }
+                    break;
+
                 // Z, X, F, O, S, L para mandar comandos al cohete
                 case Qt.Key_Z:
                     if (hasManager) serialManager.sendData('z');

@@ -22,29 +22,6 @@ TelemetryScreenForm {
         function onAltitudeUpdated(altitudeValue) {
             addDataPoint("altitude", altitudeValue)
         }
-
-        function onSpeedUpdated(speedValue) {
-            addDataPoint("speed", speedValue)
-        }
-
-        function onAccelerationUpdated(accelValue) {
-            addDataPoint("acceleration", accelValue)
-        }
-
-        function onVoltageUpdated(voltageValue) {
-            addDataPoint("voltage", voltageValue)
-        }
-
-        function onTemperatureUpdated(temperatureValue) {
-            addDataPoint("temperature", temperatureValue)
-        }
-
-        function onTimeUpdated(timeValue) {
-            // se actualizan las graficas cada 10 datos para no frenar
-            if (dataPointsCount % 10 === 0) {
-                updateAllCharts()
-            }
-        }
     }
 
     function addDataPoint(dataType, value) {
@@ -56,20 +33,6 @@ TelemetryScreenForm {
                 altitudeData.push(value)
                 if (value > maxAltitude) maxAltitude = value
                 break
-            case "speed":
-                speedData.push(value)
-                if (value > maxSpeed) maxSpeed = value
-                break
-            case "acceleration":
-                accelerationData.push(value)
-                if (value > maxAcceleration) maxAcceleration = value
-                break
-            case "voltage":
-                voltageData.push(value)
-                break
-            case "temperature":
-                temperatureData.push(value)
-                break
         }
         
         dataPointsCount++
@@ -77,10 +40,6 @@ TelemetryScreenForm {
     // para actualizar todas las graficas
     function updateAllCharts() {
         updateAltitudeChart()
-        updateSpeedChart()
-        updateAccelerationChart()
-        updateVoltageChart()
-        updateTemperatureChart()
     }
 
     //grafica de altitud
@@ -109,27 +68,6 @@ TelemetryScreenForm {
         } catch (error) {
             console.error("Error al actualizar gráfico de altitud: " + error)
         }
-    }
-
-    // Funciones para otros gráficos
-    function updateSpeedChart() {
-        //gráfico de velocidad
-        console.log("Actualizando gráfico de velocidad - " + speedData.length + " puntos")
-    }
-
-    function updateAccelerationChart() {
-        //gráfico de aceleración
-        console.log("Actualizando gráfico de aceleración - " + accelerationData.length + " puntos")
-    }
-
-    function updateVoltageChart() {
-        //gráfico de voltaje
-        console.log("Actualizando gráfico de voltaje - " + voltageData.length + " puntos")
-    }
-
-    function updateTemperatureChart() {
-        //gráfico de temperatura
-        console.log("Actualizando gráfico de temperatura - " + temperatureData.length + " puntos")
     }
 
     function exportDataToCSV() {

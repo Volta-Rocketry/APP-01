@@ -482,6 +482,8 @@ void SerialManagement::onReadyRead()
                     lastTemperature = data[1].toFloat();
                     emit temperatureUpdated(lastTemperature);
                 }
+
+                writeDataFile();
             }else if(cat == 6){
 
                 if (data.length() >= 1) {
@@ -500,6 +502,8 @@ void SerialManagement::onReadyRead()
                     }
                     emit speedUpdated(lastSpeed);
                 }
+
+                writeDataFile();
             }
         }
     }
@@ -868,7 +872,7 @@ void SerialManagement::createFile()
                     << "Lon" << ","
                     << "Temp" << ","
                     << "Volt" << ","
-                    << "Fin" << ","
+                    << "Fin"
                     << "\n";
         dataStream->flush();
 

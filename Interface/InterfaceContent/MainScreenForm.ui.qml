@@ -22,6 +22,7 @@ Rectangle {
     width: Constants.designWidth
     height: Constants.designHeight
 
+
     property alias content: content
     property alias loader: loader
 
@@ -37,9 +38,11 @@ Rectangle {
     property string temperatureText: "0° f"
     property string timeText: "T: 00:00.00"
     property real flightPhaseValue: 0
+    property real missionProgressValue: 0
     property real speedDialValue: 0
     property real altitudeDialValue: 0
     property real accelerationDialValue: 0
+
 
     Item {
         id: content
@@ -206,7 +209,7 @@ Rectangle {
                 Dial {
                     id: dialAltitude
                     from: 0
-                    to: 5000
+                    to: 11000
                     value: altitudeDialValue
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -287,7 +290,7 @@ Rectangle {
                 Dial {
                     id: dialSpeed
                     from: 0
-                    to: 600
+                    to: 1000
                     value: speedDialValue
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -720,8 +723,8 @@ Rectangle {
                     id: progressBar
 
                     from: 0
-                    to: 4
-                    value: flightPhaseValue
+                    to: 100
+                    value: missionProgressValue
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.top: parent.top

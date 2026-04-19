@@ -41,7 +41,7 @@ MainScreenForm {
             altitudeDialValue = Math.max(0, Math.min(5000, altitudeValue))
 
             addAltitudeData(time, altitudeValue)
-            
+
             console.log("MainScreen - Altitud actualizada: " + altitudeValue + " m")
         }
 
@@ -88,8 +88,8 @@ MainScreenForm {
             let seconds = Math.floor(timeValue % 60)
             let milliseconds = Math.floor((timeValue % 1) * 100)
 
-            let timeStr = "T: " + String(minutes).padStart(2, '0') + 
-                        ":" + String(seconds).padStart(2, '0') + 
+            let timeStr = "T: " + String(minutes).padStart(2, '0') +
+                        ":" + String(seconds).padStart(2, '0') +
                         "." + String(milliseconds).padStart(2, '0')
 
             timeText = timeStr
@@ -130,14 +130,14 @@ MainScreenForm {
                 let axisY = loader.item.axisY
                 if (chart) {
                     console.log("MainScreen - Actualizando gráfico con " + timeData.length + " puntos")
-                    
+
                     while (chart.count > 0) {
                         chart.removeSeries(chart.series(0))
                     }
 
-                    let series = chart.createSeries(ChartView.SeriesTypeSpline, "Altitude (m)", 
+                    let series = chart.createSeries(ChartView.SeriesTypeSpline, "Altitude (m)",
                                                      axisX, axisY)
-                    
+
                     for (let i = 0; i < timeData.length; i++) {
                         series.append(timeData[i], altitudeData[i])
                     }
@@ -145,7 +145,7 @@ MainScreenForm {
                     let maxTime = timeData.length > 0 ? timeData[timeData.length - 1] : 100
                     axisX.max = Math.max(100, maxTime * 1.1)
                     axisY.max = Math.max(1000, maxAltitude * 1.2)
-                    
+
                     console.log("MainScreen - Gráfico actualizado. Máx Altitud: " + maxAltitude)
                 }
             }
@@ -165,7 +165,7 @@ MainScreenForm {
             // Enviar datos de prueba
             let testTime = testDataTimer.triggeredOnStart ? 0 : (testTime + 1)
             let testAlt = 500 * Math.sin((testTime * Math.PI) / 30) + 500
-            
+
             if (typeof serialManager !== "undefined" && serialManager) {
                 // Simulación de eventos
                 serialManager.altitudeUpdated(testAlt)
@@ -186,7 +186,7 @@ MainScreenForm {
             exportData += "ACCELERATION," + time + "," + acceleration + "\n"
             exportData += "VOLTAGE," + time + "," + voltage + "\n"
             exportData += "TEMPERATURE," + time + "," + temperature + "\n"
-            
+
             console.log("Datos exportados:\n" + exportData)
         }
     }
@@ -212,7 +212,7 @@ MainScreenForm {
     }
 
     function requestControlPanel() {
-        console.log("MainScreen - flor clickeada, solicitando ControlPanel")
+        console.log("MainScreen, solicitando ControlPanel")
         showControlPanelRequested()
     }
 
