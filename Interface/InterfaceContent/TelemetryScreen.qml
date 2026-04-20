@@ -37,7 +37,7 @@ TelemetryScreenForm {
         
         dataPointsCount++
     }
-    // para actualizar todas las graficas
+
     function updateAllCharts() {
         updateAltitudeChart()
     }

@@ -20,8 +20,6 @@ SerialManagement::SerialManagement(QObject *parent)
     missionTimer = new QTimer(this);
     missionTimer->setInterval(100);
     connect(missionTimer, &QTimer::timeout, this, &SerialManagement::updateMissionElapsedTime);
-    elapsedTimer.start();
-    missionTimer->start();
     dataFile = nullptr;
     dataStream = nullptr;
     isLogging = false;
@@ -1013,6 +1011,24 @@ void SerialManagement::setReferenceTime()
             .arg(0.000, 0, 'f', 3);
         dataStream->flush();
     }
+}
+
+bool SerialManagement::toggleMissionTimer()
+{
+    if (!missionTimer) {
+        return false;
+    }
+
+    if (missionTimer->isActive()) {
+        missionTimer->stop();
+        qDebug() << "Timer de mision detenido";
+        return false;
+    }
+
+    setReferenceTime();
+    missionTimer->start();
+    qDebug() << "Timer de mision activado";
+    return true;
 }
 
 void SerialManagement::sendData(QString data) {     // To send data to the arduino

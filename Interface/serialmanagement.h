@@ -44,6 +44,7 @@ public:
     Q_INVOKABLE void manualMainDetected();
     Q_INVOKABLE void manualLandingDetected();
     Q_INVOKABLE void setReferenceTime();
+    Q_INVOKABLE bool toggleMissionTimer();
     Q_INVOKABLE void sendData(QString data);
     Q_INVOKABLE void sendFrequencyChange();
 

@@ -98,7 +98,7 @@ MainScreenForm {
 
             timeText = timeStr
 
-            // Actualizar progreso continuamente basado en status actual
+            // Actualizar de progreso continuamente
             updateFlightProgress()
             
             if (timeValue % 5 < 0.1) {
@@ -260,7 +260,7 @@ MainScreenForm {
     function exportCurrentData() {
         if (typeof serialManager !== "undefined" && serialManager) {
             console.log("Exportando datos actuales...")
-            // Crear un archivo temporal con los datos actuales
+
             let exportData = "Type,Timestamp,Value\n"
             exportData += "ALTITUDE," + time + "," + altitude + "\n"
             exportData += "SPEED," + time + "," + speed + "\n"
@@ -293,7 +293,7 @@ MainScreenForm {
     }
 
     function requestControlPanel() {
-        console.log("MainScreen - flor clickeada, solicitando ControlPanel")
+        console.log("MainScreen - solicitando ControlPanel")
         showControlPanelRequested()
     }
 

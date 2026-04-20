@@ -26,7 +26,6 @@ Window {
 
                 console.log("App.qml - mainLoader loaded item", item)
 
-                // me conecto al signal para cambiar a control panel
                 if (item.showControlPanelRequested) {
                     item.showControlPanelRequested.connect(function() {
                         console.log("App.qml - showControlPanelRequested received")
@@ -84,8 +83,9 @@ Window {
                     break;
 
                 case Qt.Key_T:
-                    console.log("Reset de tiempo de referencia");
-                    if (hasManager) serialManager.setReferenceTime();
+                    if (hasManager) {
+                        serialManager.toggleMissionTimer();
+                    }
                     break;
 
                 case Qt.Key_F8:
