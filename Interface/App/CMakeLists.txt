@@ -10,4 +10,6 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
     Qt${QT_VERSION_MAJOR}::Quick
     Qt${QT_VERSION_MAJOR}::Qml
     Qt${QT_VERSION_MAJOR}::SerialPort
+    Qt${QT_VERSION_MAJOR}::Location
+    Qt${QT_VERSION_MAJOR}::Positioning
 )

@@ -16,7 +16,7 @@ set(QML_IMPORT_PATH ${QT_QML_OUTPUT_DIRECTORY}
 )
 
 find_package(Qt6 6.8 REQUIRED COMPONENTS Core Gui Widgets Qml Quick QuickTimeline ShaderTools)
-find_package(Qt6 REQUIRED COMPONENTS Quick SerialPort)
+find_package(Qt6 REQUIRED COMPONENTS Quick SerialPort Location Positioning)
 
 qt_standard_project_setup()
 

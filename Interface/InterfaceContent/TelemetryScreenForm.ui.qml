@@ -10,6 +10,8 @@ import QtQuick.Controls
 import Interface 1.0
 import QtQuick.Layouts
 import QtCharts
+import QtLocation
+import QtPositioning
 
 Rectangle {
     id: display
@@ -24,6 +26,12 @@ Rectangle {
     property alias spline: spline
     property alias axisX: axisX
     property alias axisY: axisY
+    property alias telemetryMap: telemetryMap
+    property real mapCenterLat: 0.0
+    property real mapCenterLon: 0.0
+    property bool mapHasGps: false
+    property var mapPath: []
+    property real mapZoomLevel: 17.5
 
     // Sección izquierda: Vista 3D del cohete (25% del ancho)
     Rectangle {
@@ -60,7 +68,7 @@ Rectangle {
         anchors.right: mapSection.left
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        anchors.rightMargin: 40
+        anchors.rightMargin: 28
 
         ChartView {
             id: spline
@@ -107,21 +115,92 @@ Rectangle {
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        width: parent.width * 0.15
+        width: parent.width * 0.20
 
         Rectangle {
             id: mapArea
             color: "#888888"
             anchors.fill: parent
-            anchors.margins: 10
-            anchors.leftMargin: -25
+            anchors.margins: 8
+            anchors.leftMargin: 0
 
-            Text {
-                anchors.centerIn: parent
-                text: "MAP VIEW"
-                font.pointSize: 16
-                font.bold: true
-                color: "#ffffff"
+            Plugin {
+                id: mapPlugin
+                name: "osm"
+            }
+
+            Map {
+                id: telemetryMap
+                anchors.fill: parent
+                plugin: mapPlugin
+                zoomLevel: mapZoomLevel
+                center: QtPositioning.coordinate(mapCenterLat, mapCenterLon)
+                activeMapType: supportedMapTypes.length > 0 ? supportedMapTypes[0] : null
+
+                Behavior on center {
+                    CoordinateAnimation {
+                        duration: 350
+                    }
+                }
+
+                MapPolyline {
+                    path: mapPath
+                    line.width: 4
+                    line.color: "#FFB300"
+                    smooth: true
+                }
+
+                MapCircle {
+                    center: QtPositioning.coordinate(mapCenterLat, mapCenterLon)
+                    radius: 25
+                    color: "#55FF5722"
+                    border.width: 2
+                    border.color: "#FFFFFF"
+                    visible: mapHasGps
+                }
+
+                MapQuickItem {
+                    id: rocketMarker
+                    visible: mapHasGps
+                    coordinate: QtPositioning.coordinate(mapCenterLat, mapCenterLon)
+                    anchorPoint.x: 14
+                    anchorPoint.y: 14
+
+                    sourceItem: Rectangle {
+                        width: 28
+                        height: 28
+                        radius: 14
+                        color: "#FF5722"
+                        border.width: 2
+                        border.color: "#FFFFFF"
+
+                        Rectangle {
+                            width: 14
+                            height: 14
+                            radius: 7
+                            color: "#FFF"
+                            anchors.centerIn: parent
+                        }
+                    }
+                }
+
+                Component.onCompleted: {
+                    console.log("Map component completado")
+                }
+            }
+
+            Rectangle {
+                anchors.fill: parent
+                color: "#55000000"
+                visible: !mapHasGps
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "Waiting for GPS..."
+                    color: "#FFFFFF"
+                    font.pointSize: 12
+                    font.bold: true
+                }
             }
         }
     }

@@ -429,7 +429,7 @@ Rectangle {
             y: 191
             width: 1920
             height: 712
-            source: "TelemetryScreenForm.ui.qml"
+            source: "TelemetryScreen.qml"
         }
 
         Rectangle {
