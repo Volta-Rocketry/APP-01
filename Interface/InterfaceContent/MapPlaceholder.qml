@@ -22,16 +22,4 @@ Rectangle {
         verticalAlignment: Text.AlignVCenter
     }
     
-    ProgressBar {
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.margins: 10
-        anchors.bottomMargin: 10
-        height: 4
-        
-        from: 0
-        to: 100
-        indeterminate: true
-    }
 }

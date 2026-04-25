@@ -1,0 +1,91 @@
+import QtQuick
+import QtQuick3D
+
+Node {
+    id: node
+
+    // Resources
+
+    // Nodes:
+    Node {
+        id: final_Assembly_OBJ_obj
+        objectName: "Final_Assembly_OBJ.obj"
+        Model {
+            id: aleta
+            objectName: "Aleta"
+            source: "meshes/aleta_mesh.mesh"
+            materials: [
+                nylon_6_6__White__material
+            ]
+        }
+        Model {
+            id: aleta_1
+            objectName: "Aleta:1"
+            source: "meshes/aleta_1_mesh.mesh"
+            materials: [
+                nylon_6_6__White__material
+            ]
+        }
+        Model {
+            id: aleta_2
+            objectName: "Aleta:2"
+            source: "meshes/aleta_2_mesh.mesh"
+            materials: [
+                nylon_6_6__White__material
+            ]
+        }
+        Model {
+            id: aleta_3
+            objectName: "Aleta:3"
+            source: "meshes/aleta_3_mesh.mesh"
+            materials: [
+                nylon_6_6__White__material
+            ]
+        }
+        Model {
+            id: body1
+            objectName: "Body1"
+            source: "meshes/body1_mesh.mesh"
+            materials: [
+                nylon_6_6__White__material
+            ]
+        }
+        Model {
+            id: body1_1
+            objectName: "Body1:1"
+            source: "meshes/body1_1_mesh.mesh"
+            materials: [
+                nylon_6_6__White__material
+            ]
+        }
+        Model {
+            id: body1_2
+            objectName: "Body1:2"
+            source: "meshes/body1_2_mesh.mesh"
+            materials: [
+                nylon_6_6__White__material
+            ]
+        }
+        Model {
+            id: body2
+            objectName: "Body2"
+            source: "meshes/body2_mesh.mesh"
+            materials: [
+                nylon_6_6__White__material
+            ]
+        }
+    }
+
+    Node {
+        id: __materialLibrary__
+
+        PrincipledMaterial {
+            id: nylon_6_6__White__material
+            objectName: "Nylon_6-6_(White)"
+            baseColor: "#fff8f7ed"
+            indexOfRefraction: 1
+        }
+    }
+
+    // Animations:
+}

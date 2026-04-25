@@ -1,5 +1,4 @@
 
-
 /*
 This is a UI file (.ui.qml) that is intended to be edited in Qt Design Studio only.
 It is supposed to be strictly declarative and only uses a subset of QML. If you edit
@@ -161,8 +160,8 @@ Rectangle {
 
                 Text {
                     id: altitudeValue1
-                    x: 76
-                    y: 89
+                    x: 57
+                    y: 88
                     color: Constants.fontSecondary
                     text: altitudeFtText
                     font.weight: Font.Thin
@@ -178,8 +177,8 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 76
-                    anchors.rightMargin: 73
+                    anchors.leftMargin: 57
+                    anchors.rightMargin: 92
                     anchors.topMargin: 126
                     anchors.bottomMargin: 23
                     font.weight: Font.Thin
@@ -241,10 +240,10 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 67
-                    anchors.rightMargin: 78
-                    anchors.topMargin: 89
-                    anchors.bottomMargin: 73
+                    anchors.leftMargin: 53
+                    anchors.rightMargin: 92
+                    anchors.topMargin: 91
+                    anchors.bottomMargin: 71
                     verticalAlignment: Text.AlignTop
                     font.weight: Font.Thin
                     font.pointSize: 18
@@ -276,10 +275,10 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 64
-                    anchors.rightMargin: 59
-                    anchors.topMargin: 133
-                    anchors.bottomMargin: 16
+                    anchors.leftMargin: 53
+                    anchors.rightMargin: 70
+                    anchors.topMargin: 131
+                    anchors.bottomMargin: 18
                     font.weight: Font.Thin
                     font.pointSize: 18
                     font.family: "Calistoga"
@@ -429,9 +428,8 @@ Rectangle {
             y: 191
             width: 1920
             height: 712
-            source: "TelemetryScreen.qml"
+            source: "TelemetryScreenForm.ui.qml"
         }
-
         Rectangle {
             id: up
             x: 0
@@ -739,7 +737,7 @@ Rectangle {
                         radius: 8
                         height: parent.height
                         width: (missionProgressValue / 100) * parent.width
-                        
+
                         Behavior on width {
                             NumberAnimation {
                                 duration: 200

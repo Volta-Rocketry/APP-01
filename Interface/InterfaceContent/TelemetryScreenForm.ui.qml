@@ -6,12 +6,15 @@ this file manually, you might introduce QML code that is not supported by Qt Des
 Check out https://doc.qt.io/qtcreator/creator-quick-ui-forms.html for details on .ui.qml files.
 */
 import QtQuick
+import QtQuick3D
 import QtQuick.Controls
 import Interface 1.0
 import QtQuick.Layouts
 import QtCharts
 import QtLocation
 import QtPositioning
+import "../Generated/QtQuick3D/Test"
+import "../Generated/QtQuick3D/Final"
 
 Rectangle {
     id: display
@@ -41,23 +44,6 @@ Rectangle {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         width: parent.width * 0.25
-
-        Rectangle {
-            id: rocket3dArea
-            color: "#222222"
-            anchors.fill: parent
-            anchors.margins: 10
-            anchors.rightMargin: 32
-
-            Text {
-                anchors.centerIn: parent
-                text: "3D ROCKET VIEW\n"
-                font.pointSize: 18
-                font.bold: true
-                color: "#ffffff"
-                horizontalAlignment: Text.AlignHCenter
-            }
-        }
     }
 
     // Sección central: Gráfico de Altitud vs Tiempo (centro)
@@ -75,9 +61,9 @@ Rectangle {
             anchors.fill: parent
             anchors.margins: 10
             anchors.leftMargin: 0
-            anchors.rightMargin: 8
-            anchors.topMargin: 12
-            anchors.bottomMargin: 8
+            anchors.rightMargin: 13
+            anchors.topMargin: 0
+            anchors.bottomMargin: 0
 
             title: "ALTITUDE VS TIME"
             titleFont.pointSize: 16
@@ -105,10 +91,18 @@ Rectangle {
                 min: 0
                 max: 1000
             }
+
+            SplineSeries {
+                id: altitudeSeries
+                axisX: axisX
+                axisY: axisY
+                color: "#00FF00"
+                width: 2
+            }
         }
     }
 
-    // Sección derecha: Mapa y telemetría adicional
+    // Mapa
     Rectangle {
         id: mapSection
         color: Constants.backgroundMain
@@ -122,7 +116,10 @@ Rectangle {
             color: "#888888"
             anchors.fill: parent
             anchors.margins: 8
-            anchors.leftMargin: 0
+            anchors.leftMargin: -27
+            anchors.rightMargin: 8
+            anchors.topMargin: 16
+            anchors.bottomMargin: 8
 
             Plugin {
                 id: mapPlugin
@@ -134,63 +131,31 @@ Rectangle {
                 anchors.fill: parent
                 plugin: mapPlugin
                 zoomLevel: mapZoomLevel
-                center: QtPositioning.coordinate(mapCenterLat, mapCenterLon)
-                activeMapType: supportedMapTypes.length > 0 ? supportedMapTypes[0] : null
-
-                Behavior on center {
-                    CoordinateAnimation {
-                        duration: 350
-                    }
-                }
+                copyrightsVisible: false
 
                 MapPolyline {
+                    id: trajectoryLine
+                    line.color: "#00FF00"
+                    line.width: 2
                     path: mapPath
-                    line.width: 4
-                    line.color: "#FFB300"
-                    smooth: true
                 }
 
                 MapCircle {
-                    center: QtPositioning.coordinate(mapCenterLat, mapCenterLon)
-                    radius: 25
-                    color: "#55FF5722"
-                    border.width: 2
+                    id: currentPositionMarker
+                    radius: 10
+                    color: "#FF0000"
+                    border.width: 1
                     border.color: "#FFFFFF"
                     visible: mapHasGps
-                }
-
-                MapQuickItem {
-                    id: rocketMarker
-                    visible: mapHasGps
-                    coordinate: QtPositioning.coordinate(mapCenterLat, mapCenterLon)
-                    anchorPoint.x: 14
-                    anchorPoint.y: 14
-
-                    sourceItem: Rectangle {
-                        width: 28
-                        height: 28
-                        radius: 14
-                        color: "#FF5722"
-                        border.width: 2
-                        border.color: "#FFFFFF"
-
-                        Rectangle {
-                            width: 14
-                            height: 14
-                            radius: 7
-                            color: "#FFF"
-                            anchors.centerIn: parent
-                        }
-                    }
-                }
-
-                Component.onCompleted: {
-                    console.log("Map component completado")
                 }
             }
 
             Rectangle {
                 anchors.fill: parent
+                anchors.leftMargin: 0
+                anchors.rightMargin: 0
+                anchors.topMargin: 0
+                anchors.bottomMargin: 0
                 color: "#55000000"
                 visible: !mapHasGps
 
@@ -202,6 +167,108 @@ Rectangle {
                     font.bold: true
                 }
             }
+        }
+    }
+
+    Item {
+        id: __materialLibrary__
+    }
+
+    View3D {
+        id: euler_angles
+        x: 1523
+        y: 127
+        //anchors.left: speedometer.horizontalCenter
+        anchors.fill: parent
+        anchors.leftMargin: 36
+        anchors.rightMargin: 1476
+        anchors.topMargin: 8
+        anchors.bottomMargin: 8
+        camera: orthographicCamera
+
+        environment: SceneEnvironment {
+            clearColor: Constants.missionPrimary
+            backgroundMode: SceneEnvironment.Color
+        }
+
+
+        /*Model {
+           id: object
+           position: Qt.vector3d(0, 0, 0)
+           source: "#Cube" //""assets/images/test.glb"
+           scale: Qt.vector3d(2, 1, 1)
+           materials: [ DefaultMaterial {
+                   diffuseColor: "red"
+               }
+           ]
+       }*/
+        DirectionalLight {
+            x: 1.529
+            y: -1.242
+            z: -89.18201
+            brightness: 0.87
+            eulerRotation.z: -2.07888
+            eulerRotation.x: -0.79765
+            eulerRotation.y: -0.98224
+        }
+
+
+        /*
+        Missile5 {
+            id: missile5
+            x: 0
+            y: 0
+            position: Qt.vector3d(0, 0, 0)
+            z: 0
+            eulerRotation.z: 0
+            eulerRotation.y: 0
+            pivot.x: 0
+            pivot.y: 0
+            eulerRotation.x: 0
+            scale.z: 1
+            scale.y: 1
+            scale.x: 1
+            pivot.z: 0
+            scale: Qt.vector3d(2, 1, 1)
+        }
+
+    }*/
+        OrthographicCamera {
+            id: orthographicCamera
+            x: -0
+            y: 0
+            clipNear: 10
+            horizontalMagnification: 0.75
+            clipFar: 800
+            scale.z: display.height * 0.00046
+            scale.y: display.height * 0.00046
+            scale.x: display.height * 0.00046
+            z: 372.98022
+        }
+
+        Test {
+            id: testImg
+            scale.z: display.height * 0.02778
+            scale.y: display.height * 0.01852
+            scale.x: display.height * 0.01852
+            eulerRotation.z: 0
+            eulerRotation.y: 90
+            eulerRotation.x: -90
+            visible: false
+        }
+
+        Final {
+            id: _final
+            x: -30
+            y: -30.902
+            pivot.x: 1
+            scale.z: display.height * 0.00139
+            scale.y: display.height * 0.00139
+            scale.x: display.height * 0.00139
+            eulerRotation.z: 0
+            eulerRotation.y: 0
+            eulerRotation.x: -90
+            z: 0.00001
         }
     }
 }

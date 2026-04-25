@@ -25,7 +25,7 @@ TelemetryScreenForm {
         id: mapPlugin
         name: "osm"
     }
-    
+
     Connections {
         target: typeof serialManager !== "undefined" ? serialManager : null
 
@@ -157,7 +157,25 @@ TelemetryScreenForm {
         }
     }
 
-    Component.onDestruction: {
-        console.log("TelemetryScreen destruido")
+    // Watchers para actualizar el mapa cuando cambian las coordenadas
+    onMapCenterLatChanged: {
+        if (telemetryMap && mapHasGps) {
+            telemetryMap.center = QtPositioning.coordinate(mapCenterLat, mapCenterLon)
+            currentPositionMarker.center = QtPositioning.coordinate(mapCenterLat, mapCenterLon)
+        }
+    }
+
+    onMapCenterLonChanged: {
+        if (telemetryMap && mapHasGps) {
+            telemetryMap.center = QtPositioning.coordinate(mapCenterLat, mapCenterLon)
+            currentPositionMarker.center = QtPositioning.coordinate(mapCenterLat, mapCenterLon)
+        }
+    }
+
+    onMapHasGpsChanged: {
+        if (mapHasGps && telemetryMap) {
+            telemetryMap.center = QtPositioning.coordinate(mapCenterLat, mapCenterLon)
+            currentPositionMarker.center = QtPositioning.coordinate(mapCenterLat, mapCenterLon)
+        }
     }
 }
