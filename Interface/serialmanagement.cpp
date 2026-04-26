@@ -300,9 +300,11 @@ void SerialManagement::onReadyRead()
                 }
 
             }else if(cat == 3){
-                // IMU + GPS packet can arrive as:
-                // Ax,Ay,Az,Gx,Gy,Gz,Lat,Lon
-                // or Ax,Ay,Az,Gx,Gy,Gz,Alt,Vel,Lat,Lon,Temp,Volt[,status]
+                // IMU + GPS packet format expected from serial:
+                // 3,Ax,Ay,Az,Gx,Gy,Gz,Alt,Vel,Lat,Lon,Temp,Volt[,status]
+                // Example: 3,0.12,-0.05,9.80,0.01,0.03,0.00,102.5,5.4,19.123456,-99.123456,25.3,3.7,5
+                // Older/shorter packets may also appear as:
+                // 3,Ax,Ay,Az,Gx,Gy,Gz,Lat,Lon
                 if (data.length() >= 8) {
                     float Ax = data[0].toFloat();
                     float Ay = data[1].toFloat();

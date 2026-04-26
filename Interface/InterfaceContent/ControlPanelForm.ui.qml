@@ -14,14 +14,14 @@ import QtQuick.Effects
 Rectangle {
     id: controlPanelForm
     color: Constants.backgroundMain
-    
+
     readonly property int baseW: 1920
     readonly property int baseH: 1200
-    
+
     width: Constants.designWidth
     height: Constants.designHeight
 
-    signal showTelemetryRequested()
+    signal showTelemetryRequested
 
     property alias btnSearch: btnSearch
     property alias cbBaudRate: cbBaudRate
@@ -53,22 +53,22 @@ Rectangle {
 
         Text {
             id: text1
-            x: 674
-            y: 32
+            x: 583
+            y: 37
             text: qsTr("CATTLEYA GROUND STATION")
             font.pixelSize: 50
             font.bold: true
-            font.family: "Calistoga"
+            font.family: "Nasalization"
         }
 
         Text {
             id: text2
-            x: 870
+            x: 831
             y: 110
             text: qsTr("SETTINGS")
             font.pixelSize: 50
             font.bold: true
-            font.family: "Calistoga"
+            font.family: "Nasalization"
         }
 
         Rectangle {
@@ -83,11 +83,11 @@ Rectangle {
 
             Text {
                 id: text3
-                x: 182
+                x: 166
                 y: 98
                 text: qsTr("BAUD RATE")
                 font.pixelSize: 40
-                font.family: "Calistoga"
+                font.family: "Nasalization"
             }
 
             ComboBox {
@@ -98,26 +98,43 @@ Rectangle {
                 anchors.right: parent.right
                 anchors.leftMargin: 30
                 anchors.rightMargin: 30
+                font.family: "Nasalization"
                 model: ListModel {
                     id: cbBaudRateModel
-                    ListElement { key: "115200" }
-                    ListElement { key: "9600" }
-                    ListElement { key: "1200" }
-                    ListElement { key: "2400" }
-                    ListElement { key: "4800" }
-                    ListElement { key: "19200" }
-                    ListElement { key: "38400" }
-                    ListElement { key: "57600" }
+                    ListElement {
+                        key: "115200"
+                    }
+                    ListElement {
+                        key: "9600"
+                    }
+                    ListElement {
+                        key: "1200"
+                    }
+                    ListElement {
+                        key: "2400"
+                    }
+                    ListElement {
+                        key: "4800"
+                    }
+                    ListElement {
+                        key: "19200"
+                    }
+                    ListElement {
+                        key: "38400"
+                    }
+                    ListElement {
+                        key: "57600"
+                    }
                 }
             }
 
             Text {
                 id: txtTittlePort
-                x: 166
-                y: 316
+                x: 148
+                y: 319
                 text: qsTr("SERIAL PORT")
                 font.pixelSize: 40
-                font.family: "Calistoga"
+                font.family: "Nasalization"
             }
 
             ComboBox {
@@ -128,9 +145,12 @@ Rectangle {
                 anchors.right: parent.right
                 anchors.leftMargin: 30
                 anchors.rightMargin: 30
+                font.family: "Nasalization"
                 model: ListModel {
                     id: cbSerialPortModel
-                    ListElement { key: "Test Mode" }
+                    ListElement {
+                        key: "Test Mode"
+                    }
                 }
             }
 
@@ -141,6 +161,7 @@ Rectangle {
                 width: 200
                 height: 80
                 text: "Search"
+                font.family: "Nasalization"
             }
 
             Button {
@@ -150,6 +171,7 @@ Rectangle {
                 width: 200
                 height: 80
                 text: "Connect"
+                font.family: "Nasalization"
             }
         }
 
@@ -165,11 +187,11 @@ Rectangle {
 
             Text {
                 id: txtRouteSelected
-                x: 168
-                y: 84
+                x: 136
+                y: 79
                 text: qsTr("SELECT ROUTE")
                 font.pixelSize: 40
-                font.family: "Calistoga"
+                font.family: "Nasalization"
             }
 
             Button {
@@ -180,16 +202,17 @@ Rectangle {
                 anchors.right: parent.right
                 anchors.leftMargin: 30
                 anchors.rightMargin: 30
+                font.family: "Nasalization"
                 text: qsTr("Select Route")
             }
 
             Text {
                 id: text9
-                x: 188
-                y: 330
+                x: 163
+                y: 322
                 text: qsTr("FILE NAME")
                 font.pixelSize: 40
-                font.family: "Calistoga"
+                font.family: "Nasalization"
             }
 
             TextField {
@@ -199,6 +222,7 @@ Rectangle {
                 width: 548
                 height: 78
                 text: "Mission_Cattleya"
+                font.family: "Nasalization"
             }
 
             Switch {
@@ -206,6 +230,7 @@ Rectangle {
                 x: 288
                 y: 596
                 text: "AutoStart"
+                font.family: "Nasalization"
                 checked: true
             }
 
@@ -214,6 +239,7 @@ Rectangle {
                 x: 288
                 y: 688
                 text: "AutoStop"
+                font.family: "Nasalization"
                 checked: true
             }
         }
@@ -234,7 +260,7 @@ Rectangle {
                 y: 80
                 text: qsTr("ESTIMATED APOGEE")
                 font.pixelSize: 40
-                font.family: "Calistoga"
+                font.family: "Nasalization"
             }
 
             TextEdit {
@@ -243,16 +269,16 @@ Rectangle {
                 y: 194
                 text: qsTr("10000 ft")
                 font.pixelSize: 40
-                font.family: "Calistoga"
+                font.family: "Nasalization"
             }
 
             Text {
                 id: txtTittleEstimatedMainDeploy
-                x: 44
+                x: 14
                 y: 328
                 text: qsTr("ESTIMATED MAIN DEPLOY")
                 font.pixelSize: 40
-                font.family: "Calistoga"
+                font.family: "Nasalization"
             }
 
             TextEdit {
@@ -261,16 +287,16 @@ Rectangle {
                 y: 448
                 text: qsTr("10000 ft")
                 font.pixelSize: 40
-                font.family: "Calistoga"
+                font.family: "Nasalization"
             }
 
             Text {
                 id: txtTittleFrecuency
-                x: 96
+                x: 72
                 y: 576
                 text: qsTr("ROCKET FREQUENCY")
                 font.pixelSize: 40
-                font.family: "Calistoga"
+                font.family: "Nasalization"
             }
 
             TextEdit {
@@ -279,16 +305,20 @@ Rectangle {
                 y: 684
                 text: qsTr("0 Hz")
                 font.pixelSize: 40
-                font.family: "Calistoga"
+                font.family: "Nasalization"
             }
         }
 
         Image {
             id: file
-            anchors.fill: parent
+            width: 1148
+            height: 1138
             anchors.margins: 20
             opacity: 0.1
             source: "images/file.svg"
+            anchors.verticalCenterOffset: 71
+            anchors.horizontalCenterOffset: 4
+            anchors.centerIn: parent
             fillMode: Image.PreserveAspectFit
         }
 

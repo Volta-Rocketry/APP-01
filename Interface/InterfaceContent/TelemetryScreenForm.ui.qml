@@ -32,9 +32,17 @@ Rectangle {
     property alias telemetryMap: telemetryMap
     property real mapCenterLat: 0.0
     property real mapCenterLon: 0.0
-    property bool mapHasGps: false
+    property bool mapHasGps: true
     property var mapPath: []
     property real mapZoomLevel: 17.5
+
+    // Propiedades para la posición y rotación del cohete 3D
+    property real rocketX: 0.0
+    property real rocketY: 0.0
+    property real rocketZ: 0.0
+    property real rocketRotationX: -90.0
+    property real rocketRotationY: 0.0
+    property real rocketRotationZ: 0.0
 
     // Sección izquierda: Vista 3D del cohete (25% del ancho)
     Rectangle {
@@ -130,6 +138,7 @@ Rectangle {
                 id: telemetryMap
                 anchors.fill: parent
                 plugin: mapPlugin
+                center: QtPositioning.coordinate(mapCenterLat, mapCenterLon)
                 zoomLevel: mapZoomLevel
                 copyrightsVisible: false
 
@@ -142,6 +151,7 @@ Rectangle {
 
                 MapCircle {
                     id: currentPositionMarker
+                    center: QtPositioning.coordinate(mapCenterLat, mapCenterLon)
                     radius: 10
                     color: "#FF0000"
                     border.width: 1
@@ -259,15 +269,13 @@ Rectangle {
 
         Final {
             id: _final
-            x: -30
-            y: -30.902
-            pivot.x: 1
+            position: Qt.vector3d(rocketX, rocketY, rocketZ)
             scale.z: display.height * 0.00139
             scale.y: display.height * 0.00139
             scale.x: display.height * 0.00139
-            eulerRotation.z: 0
-            eulerRotation.y: 0
-            eulerRotation.x: -90
+            eulerRotation.x: rocketRotationX
+            eulerRotation.y: rocketRotationY
+            eulerRotation.z: rocketRotationZ
             z: 0.00001
         }
     }

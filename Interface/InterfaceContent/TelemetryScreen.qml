@@ -19,12 +19,20 @@ TelemetryScreenForm {
     property int dataPointsCount: 0
     property real currentLatitude: 0.0
     property real currentLongitude: 0.0
-    property bool hasValidGps: false
-
-    Plugin {
-        id: mapPlugin
-        name: "osm"
-    }
+    property bool hasValidGps: true
+    property real mapCenterLat: 4.7110
+    property real mapCenterLon: -74.0055
+    property bool mapHasGps: true
+    property var mapPath: []
+    property real mapZoomLevel: 15.0
+    property real rocketX: 0.0
+    property real rocketY: 0.0
+    property real rocketZ: 0.0
+    property real rocketRotationX: -90.0
+    property real rocketRotationY: 0.0
+    property real rocketRotationZ: 0.0
+    property real rocketReferenceLatitude: 4.7110
+    property real rocketReferenceLongitude: -74.0055
 
     Connections {
         target: typeof serialManager !== "undefined" ? serialManager : null
@@ -33,23 +41,42 @@ TelemetryScreenForm {
             addDataPoint("altitude", altitudeValue)
         }
 
-        function onTelemetryUpdated(Ax, Ay, Az, Gx, Gy, Gz, lat, lon) {
-            if (lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180) {
-                currentLatitude = lat
-                currentLongitude = lon
-                hasValidGps = true
-                
-                // Actualizar propiedades del mapa en el formulario
+        function onTelemetryUpdated(Ax, Ay, Az, Gx, Gy, Gz, Alt, Vel, lat, lon, Temp, Volt) {
+            console.log("ENTRO TELEMETRY UPDATED")
+            console.log("LAT:", lat, "LON:", lon)
+
+            // Actualizar coordenadas GPS
+            const validGps = (lat !== 0.0 || lon !== 0.0)
+            currentLatitude = lat
+            currentLongitude = lon
+            hasValidGps = validGps
+
+            // Actualizar mapa si hay GPS válido
+            if (validGps) {
                 mapCenterLat = lat
                 mapCenterLon = lon
                 mapHasGps = true
-                mapZoomLevel = 17.5
                 appendMapPoint(lat, lon)
-                
-                console.log("TelemetryScreen - GPS actualizado: " + lat.toFixed(6) + ", " + lon.toFixed(6))
+
+                // Mover el cohete lateralmente según los cambios de lat/lon
+                rocketX = (lon - rocketReferenceLongitude) * 5000
+                rocketZ = (lat - rocketReferenceLatitude) * 5000
+                rocketY = 0
+            } else {
+                mapHasGps = false
+                mapPath = [] // Limpiar trayectoria si no hay GPS
+            }
+
+            // Rotación del cohete basada en el giroscopio
+            rocketRotationZ = Gz * 0.1
+
+            // Actualizar zoom del mapa basado en la altitud
+            if (Alt > 0) {
+                mapZoomLevel = Math.max(10, 18 - (Alt / 1000) * 2)
             }
         }
     }
+
 
     function addDataPoint(dataType, value) {
         let currentTime = timeData.length > 0 ? timeData[timeData.length - 1] + 1 : 0
@@ -178,4 +205,5 @@ TelemetryScreenForm {
             currentPositionMarker.center = QtPositioning.coordinate(mapCenterLat, mapCenterLon)
         }
     }
+
 }

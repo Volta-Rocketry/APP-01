@@ -23,6 +23,7 @@ qt6_add_qml_module(InterfaceContent
     RESOURCES
         "fonts/Bevan.ttf"
         "fonts/Calistoga-Regular.ttf"
+        "fonts/nasalization.ttf"
         "images/colombia.svg"
         "images/coordenada.svg"
         "images/file.svg"

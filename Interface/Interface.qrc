@@ -57,6 +57,7 @@
         <file>InterfaceContent/ControlPanelForm.ui.qml</file>
         <file>InterfaceContent/fonts/Bevan.ttf</file>
         <file>InterfaceContent/fonts/Calistoga-Regular.ttf</file>
+        <file>InterfaceContent/fonts/nasalization.ttf</file>
         <file>InterfaceContent/images/colombia.svg</file>
         <file>InterfaceContent/images/coordenada.svg</file>
         <file>InterfaceContent/images/file.svg</file>

@@ -31,7 +31,7 @@ MainScreenForm {
     Connections {
         target: typeof serialManager !== "undefined" ? serialManager : null
 
-        function onTelemetryUpdated(Ax, Ay, Az, Gx, Gy, Gz, lat, lon) {
+        function onTelemetryUpdated(Ax, Ay, Az, Gx, Gy, Gz, Alt, Vel, lat, lon, Temp, Volt) {
             latitude = lat
             longitude = lon
 
@@ -220,7 +220,7 @@ MainScreenForm {
 
         if (!hasFlown && isNearGround && rocketStatus <= 1) {
             derivedPhase = 0
-            progressPercent = Math.min(4, (currentAlt / Math.max(1, airborneAltitude)) * 4)
+            progressPercent = 0
             progressHoldValue = 0
         } else if (hasFlown && isNearGround && !isAscending) {
             derivedPhase = 3

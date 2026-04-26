@@ -26,10 +26,10 @@ Rectangle {
 
     property string latitudeText: "0.0000000 N"
     property string longitudeText: "0.0000000 W"
-    property string altitudeFtText: "--"
-    property string altitudeMText: "--"
-    property string speedFtText: "--"
-    property string speedMText: "--"
+    property string altitudeFtText: "0 ft"
+    property string altitudeMText: "0 m"
+    property string speedFtText: "0 ft/s"
+    property string speedMText: "0 m/s"
     property string accelerationFtText: "0 ft/s²"
     property string accelerationMText: "0 m/s²"
     property string voltageText: "0.00 v"
@@ -93,7 +93,7 @@ Rectangle {
                     anchors.bottomMargin: 60
                     font.weight: Font.Thin
                     font.pointSize: 18
-                    font.family: "Calistoga"
+                    font.family: "Nasalization"
                 }
 
                 Text {
@@ -110,7 +110,7 @@ Rectangle {
                     anchors.bottomMargin: 16
                     font.weight: Font.Thin
                     font.pointSize: 18
-                    font.family: "Calistoga"
+                    font.family: "Nasalization"
                 }
 
                 Text {
@@ -127,7 +127,7 @@ Rectangle {
                     anchors.bottomMargin: 142
                     font.weight: Font.Thin
                     font.pointSize: 22
-                    font.family: "Calistoga"
+                    font.family: "Nasalization"
                 }
 
                 Dial {
@@ -166,7 +166,7 @@ Rectangle {
                     text: altitudeFtText
                     font.weight: Font.Thin
                     font.pointSize: 18
-                    font.family: "Calistoga"
+                    font.family: "Nasalization"
                 }
 
                 Text {
@@ -183,7 +183,7 @@ Rectangle {
                     anchors.bottomMargin: 23
                     font.weight: Font.Thin
                     font.pointSize: 18
-                    font.family: "Calistoga"
+                    font.family: "Nasalization"
                 }
 
                 Text {
@@ -200,7 +200,7 @@ Rectangle {
                     anchors.bottomMargin: 142
                     font.weight: Font.Thin
                     font.pointSize: 22
-                    font.family: "Calistoga"
+                    font.family: "Nasalization"
                 }
 
                 Dial {
@@ -247,7 +247,7 @@ Rectangle {
                     verticalAlignment: Text.AlignTop
                     font.weight: Font.Thin
                     font.pointSize: 18
-                    font.family: "Calistoga"
+                    font.family: "Nasalization"
                 }
 
                 Text {
@@ -264,7 +264,7 @@ Rectangle {
                     anchors.bottomMargin: 142
                     font.weight: Font.Thin
                     font.pointSize: 22
-                    font.family: "Calistoga"
+                    font.family: "Nasalization"
                 }
 
                 Text {
@@ -281,7 +281,7 @@ Rectangle {
                     anchors.bottomMargin: 18
                     font.weight: Font.Thin
                     font.pointSize: 18
-                    font.family: "Calistoga"
+                    font.family: "Nasalization"
                 }
 
                 Dial {
@@ -326,7 +326,7 @@ Rectangle {
                     anchors.bottomMargin: 30
                     font.weight: Font.Bold
                     font.pointSize: 22
-                    font.family: "Calistoga"
+                    font.family: "Nasalization"
                 }
 
                 Text {
@@ -343,7 +343,7 @@ Rectangle {
                     anchors.bottomMargin: 65
                     font.weight: Font.Bold
                     font.pointSize: 22
-                    font.family: "Calistoga"
+                    font.family: "Nasalization"
                 }
 
                 Image {
@@ -401,7 +401,7 @@ Rectangle {
                     anchors.bottomMargin: 30
                     font.weight: Font.Bold
                     font.pointSize: 22
-                    font.family: "Calistoga"
+                    font.family: "Nasalization"
                 }
 
                 Text {
@@ -418,7 +418,7 @@ Rectangle {
                     anchors.bottomMargin: 65
                     font.weight: Font.Bold
                     font.pointSize: 22
-                    font.family: "Calistoga"
+                    font.family: "Nasalization"
                 }
             }
         }
@@ -428,7 +428,7 @@ Rectangle {
             y: 191
             width: 1920
             height: 712
-            source: "TelemetryScreenForm.ui.qml"
+            source: "TelemetryScreen.qml"
         }
         Rectangle {
             id: up
@@ -493,20 +493,20 @@ Rectangle {
                 Text {
                     id: nameMission
                     color: Constants.fontPrimary
-                    text: "MISSION CATTALEYA   "
+                    text: "MISSION CATTLEYA  "
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
                     anchors.leftMargin: 100
                     anchors.rightMargin: 1422
-                    anchors.topMargin: 17
-                    anchors.bottomMargin: 15
+                    anchors.topMargin: 24
+                    anchors.bottomMargin: 8
                     anchors.verticalCenterOffset: -494
                     clip: false
                     font.weight: Font.Thin
                     font.pointSize: 30
-                    font.family: "Calistoga"
+                    font.family: "Nasalization"
                 }
 
                 Text {
@@ -524,7 +524,7 @@ Rectangle {
                     anchors.verticalCenterOffset: -494
                     font.weight: Font.Thin
                     font.pointSize: 35
-                    font.family: "Calistoga"
+                    font.family: "Nasalization"
                 }
 
                 Text {
@@ -542,7 +542,7 @@ Rectangle {
                     anchors.verticalCenterOffset: -494
                     font.weight: Font.ExtraBold
                     font.pointSize: 25
-                    font.family: "Calistoga"
+                    font.family: "Nasalization"
                 }
 
                 Text {
@@ -560,7 +560,7 @@ Rectangle {
                     anchors.verticalCenterOffset: -494
                     font.weight: Font.ExtraBold
                     font.pointSize: 25
-                    font.family: "Calistoga"
+                    font.family: "Nasalization"
                 }
 
                 Image {
@@ -613,7 +613,7 @@ Rectangle {
                     anchors.bottomMargin: 32
                     font.weight: Font.Thin
                     font.pointSize: 30
-                    font.family: "Calistoga"
+                    font.family: "Nasalization"
                     clip: false
                     anchors.verticalCenterOffset: -494
                 }
@@ -632,7 +632,7 @@ Rectangle {
                     anchors.bottomMargin: -8
                     font.weight: Font.Thin
                     font.pointSize: 30
-                    font.family: "Calistoga"
+                    font.family: "Nasalization"
                     clip: false
                     anchors.verticalCenterOffset: -494
                 }
@@ -661,7 +661,7 @@ Rectangle {
                     anchors.bottomMargin: 42
                     font.weight: Font.Bold
                     font.pointSize: 22
-                    font.family: "Calistoga"
+                    font.family: "Nasalization"
                 }
 
                 Text {
@@ -678,7 +678,7 @@ Rectangle {
                     anchors.bottomMargin: 42
                     font.weight: Font.Bold
                     font.pointSize: 22
-                    font.family: "Calistoga"
+                    font.family: "Nasalization"
                 }
 
                 Text {
@@ -695,7 +695,7 @@ Rectangle {
                     anchors.bottomMargin: 42
                     font.weight: Font.Bold
                     font.pointSize: 22
-                    font.family: "Calistoga"
+                    font.family: "Nasalization"
                 }
 
                 Text {
@@ -712,7 +712,7 @@ Rectangle {
                     anchors.bottomMargin: 42
                     font.weight: Font.Bold
                     font.pointSize: 22
-                    font.family: "Calistoga"
+                    font.family: "Nasalization"
                 }
 
                 // Progress Bar Background
