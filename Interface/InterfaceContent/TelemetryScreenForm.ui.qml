@@ -6,10 +6,11 @@ this file manually, you might introduce QML code that is not supported by Qt Des
 Check out https://doc.qt.io/qtcreator/creator-quick-ui-forms.html for details on .ui.qml files.
 */
 import QtQuick
-import QtQuick3D
 import QtQuick.Controls
-import Interface 1.0
 import QtQuick.Layouts
+import QtQuick.Shapes
+import QtQuick3D
+import Interface 1.0
 import QtCharts
 import QtLocation
 import QtPositioning
@@ -268,76 +269,118 @@ Rectangle {
                         }
 
                         // Punta del cohete
-                        Canvas {
+                        Shape {
                             x: 12
                             y: 0
                             width: 6
                             height: 6
-                            onPaint: {
-                                var ctx = getContext("2d")
-                                ctx.fillStyle = "#E0AAFF"
-                                ctx.beginPath()
-                                ctx.moveTo(3, 0)
-                                ctx.lineTo(6, 6)
-                                ctx.lineTo(0, 6)
-                                ctx.closePath()
-                                ctx.fill()
+
+                            ShapePath {
+                                strokeColor: "transparent"
+                                fillColor: "#E0AAFF"
+                                startX: 3
+                                startY: 0
+                                PathLine {
+                                    x: 6;
+                                    y: 6;
+                                }
+                                PathLine {
+                                    x: 0;
+                                    y: 6;
+                                }
+                                PathLine {
+                                    x: 3;
+                                    y: 0;
+                                }
                             }
                         }
 
                         // Aleta izquierda
-                        Canvas {
+                        Shape {
                             x: 6
                             y: 20
                             width: 8
                             height: 12
-                            onPaint: {
-                                var ctx = getContext("2d")
-                                ctx.fillStyle = "#C77DFF"
-                                ctx.beginPath()
-                                ctx.moveTo(0, 0)
-                                ctx.lineTo(8, 0)
-                                ctx.lineTo(2, 12)
-                                ctx.closePath()
-                                ctx.fill()
+
+                            ShapePath {
+                                strokeColor: "transparent"
+                                fillColor: "#C77DFF"
+                                startX: 0
+                                startY: 0
+                                PathLine {
+                                    x: 8;
+                                    y: 0;
+                                }
+                                PathLine {
+                                    x: 2;
+                                    y: 12;
+                                }
+                                PathLine {
+                                    x: 0;
+                                    y: 0;
+                                }
                             }
                         }
 
                         // Aleta derecha
-                        Canvas {
+                        Shape {
                             x: 16
                             y: 20
                             width: 8
                             height: 12
-                            onPaint: {
-                                var ctx = getContext("2d")
-                                ctx.fillStyle = "#C77DFF"
-                                ctx.beginPath()
-                                ctx.moveTo(8, 0)
-                                ctx.lineTo(0, 0)
-                                ctx.lineTo(6, 12)
-                                ctx.closePath()
-                                ctx.fill()
+
+                            ShapePath {
+                                strokeColor: "transparent"
+                                fillColor: "#C77DFF"
+                                startX: 8
+                                startY: 0
+                                PathLine {
+                                    x: 0;
+                                    y: 0;
+                                }
+                                PathLine {
+                                    x: 6;
+                                    y: 12;
+                                }
+                                PathLine {
+                                    x: 8;
+                                    y: 0;
+                                }
                             }
                         }
 
                         // Fuego del cohete
-                        Canvas {
+                        Shape {
                             x: 12
                             y: 30
                             width: 6
                             height: 8
-                            onPaint: {
-                                var ctx = getContext("2d")
-                                ctx.fillStyle = "#FF6B35"
-                                ctx.beginPath()
-                                ctx.moveTo(1, 0)
-                                ctx.lineTo(3, 8)
-                                ctx.lineTo(5, 0)
-                                ctx.lineTo(4, 4)
-                                ctx.lineTo(2, 4)
-                                ctx.closePath()
-                                ctx.fill()
+
+                            ShapePath {
+                                strokeColor: "transparent"
+                                fillColor: "#FF6B35"
+                                startX: 1
+                                startY: 0
+                                PathLine {
+                                    x: 3;
+                                    y: 8;
+                                }
+                                PathLine {
+                                    x: 5;
+                                    y: 0;
+                                }
+                                PathLine {
+                                    x: 4;
+                                    y: 4;
+                                }
+                                PathLine {
+                                    x: 2;
+                                    y: 4;
+                                }
+                                PathLine {
+                                    x: 1;
+                                    y: 0;
+                                }
                             }
                         }
 
