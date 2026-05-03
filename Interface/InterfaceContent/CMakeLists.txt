@@ -16,8 +16,6 @@ qt6_add_qml_module(InterfaceContent
         "ControlPanelForm.ui.qml"
         "MainScreen.qml"
         "MainScreenForm.ui.qml"
-        "MapPlaceholder.qml"
-        "Screen01.ui.qml"
         "TelemetryScreen.qml"
         "TelemetryScreenForm.ui.qml"
     RESOURCES

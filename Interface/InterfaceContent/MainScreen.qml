@@ -38,7 +38,7 @@ MainScreenForm {
             latitudeText = lat.toFixed(7) + " N"
             longitudeText = lon.toFixed(7) + " W"
 
-            console.log("MainScreen - Telemetría IMU: Lat=" + lat + ", Lon=" + lon)
+            console.log("Telemetría IMU: Lat=" + lat + ", Lon=" + lon)
         }
 
         function onAltitudeUpdated(altitudeValue) {
@@ -67,8 +67,8 @@ MainScreenForm {
             addAltitudeData(time, altitudeValue)
             updateFlightProgress()
             
-            console.log("MainScreen - Altitud actualizada: " + altitudeValue + " m")
-            console.log("MainScreen - Progreso de misión: " + missionProgressValue.toFixed(1) + "%")
+            console.log("Altitud actualizada: " + altitudeValue + " m")
+            console.log("Progreso de misión: " + missionProgressValue.toFixed(1) + "%")
         }
 
         function onSpeedUpdated(speedValue) {
@@ -78,7 +78,7 @@ MainScreenForm {
             speedMText = speedValue.toFixed(1) + " m/s"
             speedDialValue = Math.max(0, Math.min(500, speedValue))
 
-            console.log("MainScreen - Velocidad actualizada: " + speedValue + " m/s")
+            console.log("Velocidad actualizada: " + speedValue + " m/s")
         }
 
         function onAccelerationUpdated(accelValue) {
@@ -88,7 +88,7 @@ MainScreenForm {
             accelerationMText = accelValue.toFixed(1) + " m/s²"
             accelerationDialValue = Math.max(0, Math.min(200, accelValue))
 
-            console.log("MainScreen - Aceleración actualizada: " + accelValue + " m/s²")
+            console.log("Aceleración actualizada: " + accelValue + " m/s²")
         }
 
         function onVoltageUpdated(voltageValue) {
@@ -96,7 +96,7 @@ MainScreenForm {
 
             voltageText = voltageValue.toFixed(2) + " v"
 
-            console.log("MainScreen - Voltaje actualizado: " + voltageValue + " v")
+            console.log("Voltaje actualizado: " + voltageValue + " v")
         }
 
         function onTemperatureUpdated(temperatureValue) {
@@ -104,7 +104,7 @@ MainScreenForm {
 
             temperatureText = temperatureValue.toFixed(0) + "° f"
 
-            console.log("MainScreen - Temperatura actualizada: " + temperatureValue + " °")
+            console.log("Temperatura actualizada: " + temperatureValue + " °")
         }
 
         function onTimeUpdated(timeValue) {
@@ -120,21 +120,21 @@ MainScreenForm {
 
             timeText = timeStr
 
-            // Actualizar de progreso continuamente
+            // Actualizar continuamente
             updateFlightProgress()
             
             if (timeValue % 5 < 0.1) {
-                console.log("MainScreen - Tiempo: " + timeStr + ", Progreso: " + missionProgressValue.toFixed(1) + "%")
+                console.log("Tiempo: " + timeStr + ", Progreso: " + missionProgressValue.toFixed(1) + "%")
             }
 
-            console.log("MainScreen - Tiempo actualizado: " + timeStr)
+            console.log("Tiempo actualizado: " + timeStr)
         }
 
         function onFlightPhaseUpdated(phase) {
             flightPhaseValue = phase + 1
             updateFlightProgress()
 
-            console.log("MainScreen - Fase de vuelo actualizada: " + phase)
+            console.log("Fase de vuelo actualizada: " + phase)
         }
 
         function onMicrocontrollerConnectionStatus(status) {
@@ -155,7 +155,7 @@ MainScreenForm {
         lastDerivedPhase = -1
         flightPhaseValue = 0
         missionProgressValue = 0
-        console.log("MainScreen - Tracking de misión reiniciado")
+        console.log("Tracking de misión reiniciado")
     }
 
     function addAltitudeData(timeVal, altVal) {
@@ -276,7 +276,7 @@ MainScreenForm {
         if (willRun) {
             testSimulationSeconds = 0
         }
-        console.log("MainScreen - Timer de prueba " + (testDataTimer.running ? "activado" : "detenido"))
+        console.log("Timer de prueba " + (testDataTimer.running ? "activado" : "detenido"))
         return testDataTimer.running
     }
 
@@ -287,13 +287,13 @@ MainScreenForm {
                 let axisX = loader.item.axisX
                 let axisY = loader.item.axisY
                 if (chart) {
-                    console.log("MainScreen - Actualizando gráfico con " + timeData.length + " puntos")
+                    console.log("Actualizando gráfico con " + timeData.length + " puntos")
                     
                     while (chart.count > 0) {
                         chart.removeSeries(chart.series(0))
                     }
 
-                    let series = chart.createSeries(ChartView.SeriesTypeSpline, "Altitude (m)", 
+                    let series = chart.createSeries(ChartView.SeriesTypeSpline, "Altitude (ft)",
                                                      axisX, axisY)
                     
                     for (let i = 0; i < timeData.length; i++) {
@@ -304,7 +304,7 @@ MainScreenForm {
                     axisX.max = Math.max(100, maxTime * 1.1)
                     axisY.max = Math.max(1000, maxAltitude * 1.2)
                     
-                    console.log("MainScreen - Gráfico actualizado. Máx Altitud: " + maxAltitude)
+                    console.log("Gráfico actualizado. Máx Altitud: " + maxAltitude)
                 }
             }
         } catch (error) {

@@ -73,8 +73,8 @@ Rectangle {
                 anchors.right: parent.right
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
-                anchors.leftMargin: 1137
-                anchors.rightMargin: 553
+                anchors.leftMargin: 1077
+                anchors.rightMargin: 613
                 anchors.topMargin: -13
                 anchors.bottomMargin: 3
 
@@ -87,10 +87,10 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 60
-                    anchors.rightMargin: 88
-                    anchors.topMargin: 89
-                    anchors.bottomMargin: 60
+                    anchors.leftMargin: 98
+                    anchors.rightMargin: 50
+                    anchors.topMargin: 87
+                    anchors.bottomMargin: 62
                     font.weight: Font.Thin
                     font.pointSize: 18
                     font.family: "Nasalization"
@@ -104,10 +104,10 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 58
-                    anchors.rightMargin: 86
-                    anchors.topMargin: 133
-                    anchors.bottomMargin: 16
+                    anchors.leftMargin: 98
+                    anchors.rightMargin: 46
+                    anchors.topMargin: 116
+                    anchors.bottomMargin: 33
                     font.weight: Font.Thin
                     font.pointSize: 18
                     font.family: "Nasalization"
@@ -139,10 +139,10 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 29
-                    anchors.rightMargin: 41
-                    anchors.topMargin: 48
-                    anchors.bottomMargin: -21
+                    anchors.leftMargin: 70
+                    anchors.rightMargin: 0
+                    anchors.topMargin: 44
+                    anchors.bottomMargin: -17
                 }
             }
 
@@ -153,15 +153,15 @@ Rectangle {
                 anchors.right: parent.right
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
-                anchors.leftMargin: 849
-                anchors.rightMargin: 871
+                anchors.leftMargin: 789
+                anchors.rightMargin: 931
                 anchors.topMargin: -13
                 anchors.bottomMargin: 3
 
                 Text {
                     id: altitudeValue1
-                    x: 57
-                    y: 88
+                    x: 79
+                    y: 91
                     color: Constants.fontSecondary
                     text: altitudeFtText
                     font.weight: Font.Thin
@@ -177,10 +177,10 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 57
-                    anchors.rightMargin: 92
-                    anchors.topMargin: 126
-                    anchors.bottomMargin: 23
+                    anchors.leftMargin: 79
+                    anchors.rightMargin: 70
+                    anchors.topMargin: 121
+                    anchors.bottomMargin: 28
                     font.weight: Font.Thin
                     font.pointSize: 18
                     font.family: "Nasalization"
@@ -212,10 +212,10 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 22
-                    anchors.rightMargin: 18
-                    anchors.topMargin: 48
-                    anchors.bottomMargin: -21
+                    anchors.leftMargin: 45
+                    anchors.rightMargin: -5
+                    anchors.topMargin: 43
+                    anchors.bottomMargin: -16
                 }
             }
 
@@ -226,8 +226,8 @@ Rectangle {
                 anchors.right: parent.right
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
-                anchors.leftMargin: 538
-                anchors.rightMargin: 1182
+                anchors.leftMargin: 474
+                anchors.rightMargin: 1246
                 anchors.topMargin: -13
                 anchors.bottomMargin: 3
 
@@ -240,10 +240,10 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 53
-                    anchors.rightMargin: 92
-                    anchors.topMargin: 91
-                    anchors.bottomMargin: 71
+                    anchors.leftMargin: 81
+                    anchors.rightMargin: 64
+                    anchors.topMargin: 90
+                    anchors.bottomMargin: 72
                     verticalAlignment: Text.AlignTop
                     font.weight: Font.Thin
                     font.pointSize: 18
@@ -275,10 +275,10 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 53
-                    anchors.rightMargin: 70
-                    anchors.topMargin: 131
-                    anchors.bottomMargin: 18
+                    anchors.leftMargin: 81
+                    anchors.rightMargin: 42
+                    anchors.topMargin: 121
+                    anchors.bottomMargin: 28
                     font.weight: Font.Thin
                     font.pointSize: 18
                     font.family: "Nasalization"
@@ -293,10 +293,10 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 23
-                    anchors.rightMargin: 17
-                    anchors.topMargin: 48
-                    anchors.bottomMargin: -21
+                    anchors.leftMargin: 53
+                    anchors.rightMargin: -13
+                    anchors.topMargin: 43
+                    anchors.bottomMargin: -16
                 }
             }
 
@@ -366,10 +366,10 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 1452
-                    anchors.rightMargin: -1252
-                    anchors.topMargin: 11
-                    anchors.bottomMargin: 7
+                    anchors.leftMargin: 1403
+                    anchors.rightMargin: -1203
+                    anchors.topMargin: 10
+                    anchors.bottomMargin: 8
                     source: "images/coordenada.svg"
                     fillMode: Image.PreserveAspectFit
                 }
@@ -382,9 +382,9 @@ Rectangle {
                 anchors.right: parent.right
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
-                anchors.leftMargin: 1483
-                anchors.rightMargin: 77
-                anchors.topMargin: 12
+                anchors.leftMargin: 1437
+                anchors.rightMargin: 123
+                anchors.topMargin: 13
                 anchors.bottomMargin: 13
 
                 Text {
@@ -453,10 +453,10 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 1317
-                    anchors.rightMargin: 558
-                    anchors.topMargin: 0
-                    anchors.bottomMargin: 47
+                    anchors.leftMargin: 1279
+                    anchors.rightMargin: 596
+                    anchors.topMargin: 1
+                    anchors.bottomMargin: 46
                     source: "images/voltaje.svg"
                     fillMode: Image.PreserveAspectFit
                 }
@@ -481,8 +481,8 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 1317
-                    anchors.rightMargin: 558
+                    anchors.leftMargin: 1279
+                    anchors.rightMargin: 596
                     anchors.topMargin: 47
                     anchors.bottomMargin: 0
                     source: "images/tempe (1).svg"
@@ -517,10 +517,10 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 782
-                    anchors.rightMargin: 880
-                    anchors.topMargin: 17
-                    anchors.bottomMargin: 13
+                    anchors.leftMargin: 744
+                    anchors.rightMargin: 918
+                    anchors.topMargin: 15
+                    anchors.bottomMargin: 15
                     anchors.verticalCenterOffset: -494
                     font.weight: Font.Thin
                     font.pointSize: 35
@@ -535,10 +535,10 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 1381
-                    anchors.rightMargin: 440
-                    anchors.topMargin: 2
-                    anchors.bottomMargin: 47
+                    anchors.leftMargin: 1346
+                    anchors.rightMargin: 475
+                    anchors.topMargin: 3
+                    anchors.bottomMargin: 46
                     anchors.verticalCenterOffset: -494
                     font.weight: Font.ExtraBold
                     font.pointSize: 25
@@ -553,10 +553,10 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 1423
-                    anchors.rightMargin: 440
-                    anchors.topMargin: 49
-                    anchors.bottomMargin: 0
+                    anchors.leftMargin: 1388
+                    anchors.rightMargin: 475
+                    anchors.topMargin: 48
+                    anchors.bottomMargin: 1
                     anchors.verticalCenterOffset: -494
                     font.weight: Font.ExtraBold
                     font.pointSize: 25
@@ -583,8 +583,8 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 1549
-                    anchors.rightMargin: 279
+                    anchors.leftMargin: 1500
+                    anchors.rightMargin: 328
                     anchors.topMargin: 0
                     anchors.bottomMargin: 0
                     source: "images/logoU.svg"
@@ -607,8 +607,8 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 1647
-                    anchors.rightMargin: 149
+                    anchors.leftMargin: 1606
+                    anchors.rightMargin: 190
                     anchors.topMargin: 0
                     anchors.bottomMargin: 32
                     font.weight: Font.Thin
@@ -626,10 +626,10 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 1684
-                    anchors.rightMargin: 112
-                    anchors.topMargin: 40
-                    anchors.bottomMargin: -8
+                    anchors.leftMargin: 1637
+                    anchors.rightMargin: 159
+                    anchors.topMargin: 39
+                    anchors.bottomMargin: -7
                     font.weight: Font.Thin
                     font.pointSize: 30
                     font.family: "Nasalization"

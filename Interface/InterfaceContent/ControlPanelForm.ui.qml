@@ -311,14 +311,10 @@ Rectangle {
 
         Image {
             id: file
-            width: 1148
-            height: 1138
             anchors.margins: 20
             opacity: 0.1
+            anchors.fill: parent
             source: "images/file.svg"
-            anchors.verticalCenterOffset: 71
-            anchors.horizontalCenterOffset: 4
-            anchors.centerIn: parent
             fillMode: Image.PreserveAspectFit
         }
 

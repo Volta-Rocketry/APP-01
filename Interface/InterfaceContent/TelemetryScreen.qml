@@ -20,11 +20,9 @@ TelemetryScreenForm {
     property real currentLatitude: 0.0
     property real currentLongitude: 0.0
     property bool hasValidGps: true
-    property real mapCenterLat: 4.7110
-    property real mapCenterLon: -74.0055
     property bool mapHasGps: true
-    property var mapPath: []
     property real mapZoomLevel: 15.0
+
     property real rocketX: 0.0
     property real rocketY: 0.0
     property real rocketZ: 0.0
@@ -133,12 +131,12 @@ TelemetryScreenForm {
                     altitudeSeries.append(timeData[i], altitudeData[i])
                 }
 
-                // Actualizar rangos de ejes
+                // Para actualizar rangos de ejes
                 let maxTime = timeData.length > 0 ? timeData[timeData.length - 1] : 100
                 axisX.max = Math.max(100, maxTime * 1.1)
                 axisY.max = Math.max(1000, maxAltitude * 1.2)
                 
-                console.log("TelemetryScreen - Gráfico de altitud actualizado. Máx Altitud: " + maxAltitude)
+                console.log("Gráfico de altitud actualizado. Máx Altitud: " + maxAltitude)
             }
         } catch (error) {
             console.error("Error al actualizar gráfico de altitud: " + error)
@@ -180,7 +178,7 @@ TelemetryScreenForm {
         if (typeof serialManager !== "undefined" && serialManager) {
             console.log("serialManager disponible en TelemetryScreen")
         } else {
-            console.warn("serialManager NO disponible en TelemetryScreen")
+            console.warn("serialManager no disponible en TelemetryScreen")
         }
     }
 
