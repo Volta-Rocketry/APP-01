@@ -27,6 +27,7 @@ MainScreenForm {
     property real progressHoldValue: 0.0
     property bool missionWasAirborne: false
     property int lastDerivedPhase: -1
+    property real previousTelemetryTime: -1.0
 
     Connections {
         target: typeof serialManager !== "undefined" ? serialManager : null
@@ -108,7 +109,14 @@ MainScreenForm {
         }
 
         function onTimeUpdated(timeValue) {
+            const isNewTelemetryRun = dataPointsCount > 0 && previousTelemetryTime >= 0 && timeValue <= 1 && previousTelemetryTime > 1
+            if (isNewTelemetryRun) {
+                resetMissionTracking()
+                clearMissionData()
+            }
+
             time = timeValue
+            previousTelemetryTime = timeValue
 
             let minutes = Math.floor(timeValue / 60)
             let seconds = Math.floor(timeValue % 60)
@@ -120,7 +128,7 @@ MainScreenForm {
 
             timeText = timeStr
 
-            // Actualizar continuamente
+            //Actualizar continuamente
             updateFlightProgress()
             
             if (timeValue % 5 < 0.1) {
@@ -141,6 +149,7 @@ MainScreenForm {
             console.log("Estado de conexión microcontrolador: " + status)
             if (!status) {
                 resetMissionTracking()
+                clearMissionData()
             }
         }
     }
@@ -153,9 +162,19 @@ MainScreenForm {
         progressHoldValue = 0.0
         missionWasAirborne = false
         lastDerivedPhase = -1
+        previousTelemetryTime = -1.0
         flightPhaseValue = 0
         missionProgressValue = 0
         console.log("Tracking de misión reiniciado")
+    }
+
+    function clearMissionData() {
+        timeData = []
+        altitudeData = []
+        maxAltitude = 0.0
+        dataPointsCount = 0
+        updateAltitudeChart()
+        console.log("Datos de misión limpiados")
     }
 
     function addAltitudeData(timeVal, altVal) {
@@ -194,6 +213,8 @@ MainScreenForm {
         const descendThreshold = -0.35
         const groundAltitude = 3.0
         const airborneAltitude = 8.0
+        const apogeeStart = Math.max(1, estApogeeAlt * 0.7)
+        const touchdownThreshold = Math.max(groundAltitude + 1, estMainAlt)
 
         let progressPercent = 0
         let derivedPhase = 0
@@ -206,15 +227,13 @@ MainScreenForm {
         const isNearGround = currentAlt <= groundAltitude
         const isAscending = verticalRateMs >= ascendThreshold
         const isDescending = verticalRateMs <= descendThreshold
-        const apogeeWindow = Math.max(estApogeeAlt * 0.12, 35)
-        const isNearApogee = currentAlt >= Math.max(airborneAltitude, peakAltitude - apogeeWindow)
-
         if (hasFlown) {
             missionWasAirborne = true
         }
 
         if (missionWasAirborne && rocketStatus <= 1 && isNearGround && !isAscending && time > 3) {
             resetMissionTracking()
+            clearMissionData()
             return
         }
 
@@ -222,49 +241,36 @@ MainScreenForm {
             derivedPhase = 0
             progressPercent = 0
             progressHoldValue = 0
-        } else if (hasFlown && isNearGround && !isAscending) {
+        } else if (hasFlown && currentAlt <= touchdownThreshold && !isAscending) {
             derivedPhase = 3
-            progressPercent = 100
-        } else if (isAscending) {
-            derivedPhase = 0
-            progressPercent = (currentAlt / estApogeeAlt) * 35
-        } else if (isNearApogee && !isDescending) {
-            derivedPhase = 1
-            const apogeeStart = Math.max(1, estApogeeAlt * 0.7)
-            const apogeeSpan = Math.max(1, estApogeeAlt - apogeeStart)
-            progressPercent = 35 + ((currentAlt - apogeeStart) / apogeeSpan) * 20
-        } else {
+            const touchdownSpan = Math.max(1, touchdownThreshold - groundAltitude)
+            progressPercent = 85 + (((touchdownThreshold - currentAlt) / touchdownSpan) * 15)
+        } else if (isDescending && currentAlt > touchdownThreshold) {
             derivedPhase = 2
-            const descentTop = Math.max(estMainAlt + 1, peakAltitude)
-            const descentRange = Math.max(1, descentTop - groundAltitude)
-            progressPercent = 55 + ((descentTop - currentAlt) / descentRange) * 40
+            const descentTop = Math.max(estApogeeAlt, peakAltitude)
+            const descentRange = Math.max(1, descentTop - touchdownThreshold)
+            progressPercent = 57 + ((descentTop - currentAlt) / descentRange) * 28
+        } else if (currentAlt >= apogeeStart && !isDescending) {
+            derivedPhase = 1
+            const apogeeSpan = Math.max(1, estApogeeAlt - apogeeStart)
+            progressPercent = 31 + ((currentAlt - apogeeStart) / apogeeSpan) * 26
+        } else {
+            derivedPhase = 0
+            progressPercent = (currentAlt / apogeeStart) * 31
         }
 
         if (derivedPhase === 0) {
-            progressPercent = Math.max(0, Math.min(35, progressPercent))
+            progressPercent = Math.max(0, Math.min(31, progressPercent))
         } else if (derivedPhase === 1) {
-            progressPercent = Math.max(35, Math.min(55, progressPercent))
+            progressPercent = Math.max(31, Math.min(57, progressPercent))
         } else if (derivedPhase === 2) {
-            progressPercent = Math.max(55, Math.min(95, progressPercent))
+            progressPercent = Math.max(57, Math.min(85, progressPercent))
         } else if (derivedPhase === 3) {
-            progressPercent = 100
+            progressPercent = Math.max(85, Math.min(100, progressPercent))
         }
 
-        if (lastDerivedPhase >= 2 && derivedPhase === 0 && currentAlt <= airborneAltitude * 1.5) {
-            progressHoldValue = 0
-            missionWasAirborne = false
-            peakAltitude = currentAlt
-        }
-
-        if (derivedPhase !== 3) {
-            progressPercent = Math.max(progressPercent, progressHoldValue)
-            progressHoldValue = progressPercent
-        } else {
-            missionWasAirborne = true
-        }
-
-        flightPhaseValue = derivedPhase + 1
         missionProgressValue = Math.max(0, Math.min(100, progressPercent))
+        flightPhaseValue = derivedPhase + 1
         lastDerivedPhase = derivedPhase
 
         console.log("DEBUG Phase Derived - Phase=" + derivedPhase + ", Progress=" + missionProgressValue.toFixed(1) + "%")

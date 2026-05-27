@@ -68,6 +68,7 @@ TelemetryScreenForm {
             // Rotación del cohete basada en el giroscopio
             rocketRotationZ = Gz * 0.1
 
+
             // Actualizar zoom del mapa basado en la altitud
             if (Alt > 0) {
                 mapZoomLevel = Math.max(10, 18 - (Alt / 1000) * 2)
@@ -203,5 +204,9 @@ TelemetryScreenForm {
             currentPositionMarker.center = QtPositioning.coordinate(mapCenterLat, mapCenterLon)
         }
     }
+
+    _cohete11.eulerRotation.z : serialManager.getLastDataInList(6, -1)
+    _cohete11.eulerRotation.y : serialManager.getLastDataInList(5, -1)
+    _cohete11.eulerRotation.x : -90 + serialManager.getLastDataInList(4, -1)
 
 }

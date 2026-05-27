@@ -7,7 +7,7 @@ import Interface 1.0
 import QtCharts
 import QtLocation
 import QtPositioning
-import "../Generated/QtQuick3D/Cohete11"
+import Generated.QtQuick3D.Cohete11
 
 Rectangle {
     id: display
@@ -35,9 +35,9 @@ Rectangle {
     property real rocketRotationX: -90.0
     property real rocketRotationY: 0.0
     property real rocketRotationZ: 0.0
-    property real rocketViewportSize: Math.min(rocket3dSection.width,
-                                               rocket3dSection.height)
+    property real rocketViewportSize: Math.min(rocket3dSection.width, rocket3dSection.height)
     property real rocketYOffset: -300
+    property alias _cohete11: _cohete11
 
     // Vista 3D del cohete
     Rectangle {
@@ -89,7 +89,7 @@ Rectangle {
             }
 
             Cohete11 {
-                id: _final
+                id: _cohete11
                 position: Qt.vector3d(0, rocketYOffset, 0)
                 scale.z: rocketViewportSize * 0.0004
                 scale.y: rocketViewportSize * 0.0004
@@ -414,8 +414,3 @@ Rectangle {
     }
 }
 
-/*##^##
-Designer {
-    D{i:0}D{i:2;cameraSpeed3d:25;cameraSpeed3dMultiplier:1}
-}
-##^##*/
