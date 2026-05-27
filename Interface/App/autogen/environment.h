@@ -8,10 +8,7 @@
 #include <QGuiApplication>
 #include "qqmlextensionplugin.h"
 
-Q_IMPORT_QML_PLUGIN(Generated_QtQuick3D_FinalPlugin)
-Q_IMPORT_QML_PLUGIN(Generated_QtQuick3D_Final_Assembly_OBJPlugin)
-Q_IMPORT_QML_PLUGIN(Generated_QtQuick3D_Missile5Plugin)
-Q_IMPORT_QML_PLUGIN(Generated_QtQuick3D_TestPlugin)
+Q_IMPORT_QML_PLUGIN(Generated_QtQuick3D_Cohete11Plugin)
 Q_IMPORT_QML_PLUGIN(InterfacePlugin)
 Q_IMPORT_QML_PLUGIN(InterfaceContentPlugin)
 

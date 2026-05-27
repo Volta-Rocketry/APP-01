@@ -8,10 +8,7 @@ add_subdirectory(App)
 add_subdirectory(Dependencies)
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
-    Generated_QtQuick3D_Finalplugin
-    Generated_QtQuick3D_Final_Assembly_OBJplugin
-    Generated_QtQuick3D_Missile5plugin
-    Generated_QtQuick3D_Testplugin
+    Generated_QtQuick3D_Cohete11plugin
     Interfaceplugin
     InterfaceContentplugin
     QtQuickDesignerComponents)

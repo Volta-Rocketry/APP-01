@@ -1,10 +1,3 @@
-
-/*
-This is a UI file (.ui.qml) that is intended to be edited in Qt Design Studio only.
-It is supposed to be strictly declarative and only uses a subset of QML. If you edit
-this file manually, you might introduce QML code that is not supported by Qt Design Studio.
-Check out https://doc.qt.io/qtcreator/creator-quick-ui-forms.html for details on .ui.qml files.
-*/
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -14,8 +7,7 @@ import Interface 1.0
 import QtCharts
 import QtLocation
 import QtPositioning
-import "../Generated/QtQuick3D/Test"
-import "../Generated/QtQuick3D/Final"
+import "../Generated/QtQuick3D/Cohete11"
 
 Rectangle {
     id: display
@@ -43,6 +35,8 @@ Rectangle {
     property real rocketRotationX: -90.0
     property real rocketRotationY: 0.0
     property real rocketRotationZ: 0.0
+    property real rocketViewportSize: Math.min(rocket3dSection.width, rocket3dSection.height)
+    property real rocketYOffset: -300
 
     // Vista 3D del cohete
     Rectangle {
@@ -56,7 +50,7 @@ Rectangle {
         View3D {
             id: euler_angles
             anchors.fill: parent
-            anchors.margins: 12
+            anchors.margins: 0
             camera: orthographicCamera
 
             environment: SceneEnvironment {
@@ -76,34 +70,24 @@ Rectangle {
 
             OrthographicCamera {
                 id: orthographicCamera
-                x: rocketX
-                y: rocketZ
-                clipNear: 10
-                horizontalMagnification: 0.75
-                clipFar: 800
-                scale.z: display.height * 0.00046
-                scale.y: display.height * 0.00046
-                scale.x: display.height * 0.00046
-                z: 372.98022
+                x: 0
+                y: 0
+                clipNear: 1
+                horizontalMagnification: 1.0
+                verticalMagnification: 1.0
+                clipFar: 5000
+                scale.z: display.height * 0.00075
+                scale.y: display.height * 0.00075
+                scale.x: display.height * 0.00075
+                z: 800
             }
 
-            Test {
-                id: testImg
-                scale.z: display.height * 0.02778
-                scale.y: display.height * 0.01852
-                scale.x: display.height * 0.01852
-                eulerRotation.z: 0
-                eulerRotation.y: 90
-                eulerRotation.x: -90
-                visible: false
-            }
-
-            Final {
+            Cohete11 {
                 id: _final
-                position: Qt.vector3d(rocketX, rocketY, rocketZ)
-                scale.z: display.height * 0.00139
-                scale.y: display.height * 0.00139
-                scale.x: display.height * 0.00139
+                position: Qt.vector3d(0, rocketYOffset, 0)
+                scale.z: rocketViewportSize * 0.0004
+                scale.y: rocketViewportSize * 0.0004
+                scale.x: rocketViewportSize * 0.0004
                 eulerRotation.x: rocketRotationX
                 eulerRotation.y: rocketRotationY
                 eulerRotation.z: rocketRotationZ
@@ -281,16 +265,16 @@ Rectangle {
                                 startX: 3
                                 startY: 0
                                 PathLine {
-                                    x: 6;
-                                    y: 6;
+                                    x: 6
+                                    y: 6
                                 }
                                 PathLine {
-                                    x: 0;
-                                    y: 6;
+                                    x: 0
+                                    y: 6
                                 }
                                 PathLine {
-                                    x: 3;
-                                    y: 0;
+                                    x: 3
+                                    y: 0
                                 }
                             }
                         }
@@ -308,16 +292,16 @@ Rectangle {
                                 startX: 0
                                 startY: 0
                                 PathLine {
-                                    x: 8;
-                                    y: 0;
+                                    x: 8
+                                    y: 0
                                 }
                                 PathLine {
-                                    x: 2;
-                                    y: 12;
+                                    x: 2
+                                    y: 12
                                 }
                                 PathLine {
-                                    x: 0;
-                                    y: 0;
+                                    x: 0
+                                    y: 0
                                 }
                             }
                         }
@@ -335,16 +319,16 @@ Rectangle {
                                 startX: 8
                                 startY: 0
                                 PathLine {
-                                    x: 0;
-                                    y: 0;
+                                    x: 0
+                                    y: 0
                                 }
                                 PathLine {
-                                    x: 6;
-                                    y: 12;
+                                    x: 6
+                                    y: 12
                                 }
                                 PathLine {
-                                    x: 8;
-                                    y: 0;
+                                    x: 8
+                                    y: 0
                                 }
                             }
                         }
@@ -362,24 +346,24 @@ Rectangle {
                                 startX: 1
                                 startY: 0
                                 PathLine {
-                                    x: 3;
-                                    y: 8;
+                                    x: 3
+                                    y: 8
                                 }
                                 PathLine {
-                                    x: 5;
-                                    y: 0;
+                                    x: 5
+                                    y: 0
                                 }
                                 PathLine {
-                                    x: 4;
-                                    y: 4;
+                                    x: 4
+                                    y: 4
                                 }
                                 PathLine {
-                                    x: 2;
-                                    y: 4;
+                                    x: 2
+                                    y: 4
                                 }
                                 PathLine {
-                                    x: 1;
-                                    y: 0;
+                                    x: 1
+                                    y: 0
                                 }
                             }
                         }
@@ -421,3 +405,6 @@ Rectangle {
         id: __materialLibrary__
     }
 }
+
+
+
