@@ -35,7 +35,8 @@ Rectangle {
     property real rocketRotationX: -90.0
     property real rocketRotationY: 0.0
     property real rocketRotationZ: 0.0
-    property real rocketViewportSize: Math.min(rocket3dSection.width, rocket3dSection.height)
+    property real rocketViewportSize: Math.min(rocket3dSection.width,
+                                               rocket3dSection.height)
     property real rocketYOffset: -300
 
     // Vista 3D del cohete
@@ -44,6 +45,7 @@ Rectangle {
         color: Constants.backgroundMain
         anchors.left: parent.left
         anchors.top: parent.top
+        anchors.topMargin: topContentOffset
         anchors.bottom: parent.bottom
         width: parent.width * 0.25
 
@@ -51,6 +53,10 @@ Rectangle {
             id: euler_angles
             anchors.fill: parent
             anchors.margins: 0
+            anchors.leftMargin: 8
+            anchors.rightMargin: 0
+            anchors.topMargin: 16
+            anchors.bottomMargin: 8
             camera: orthographicCamera
 
             environment: SceneEnvironment {
@@ -103,6 +109,7 @@ Rectangle {
         anchors.left: rocket3dSection.right
         anchors.right: mapSection.left
         anchors.top: parent.top
+        anchors.topMargin: topContentOffset
         anchors.bottom: parent.bottom
         anchors.rightMargin: 28
 
@@ -158,6 +165,7 @@ Rectangle {
         color: Constants.backgroundMain
         anchors.right: parent.right
         anchors.top: parent.top
+        anchors.topMargin: topContentOffset
         anchors.bottom: parent.bottom
         width: parent.width * 0.20
 
@@ -406,5 +414,8 @@ Rectangle {
     }
 }
 
-
-
+/*##^##
+Designer {
+    D{i:0}D{i:2;cameraSpeed3d:25;cameraSpeed3dMultiplier:1}
+}
+##^##*/
